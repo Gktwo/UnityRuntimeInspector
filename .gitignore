@@ -1049,3 +1049,6 @@ dkms.conf
 
 # Build directories
 bin/
+
+# Include compiled libraries from vendor/minhook
+!vendor/minhook/lib/*.lib
