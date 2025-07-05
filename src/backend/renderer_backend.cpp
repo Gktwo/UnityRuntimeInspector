@@ -6,7 +6,7 @@
 
 std::unique_ptr<IRendererBackend> createBackend()
 {
-	RenderAPI api = DXUtils::getRenderAPI();
+	RenderAPI api = Utils::DXUtils::getRenderAPI();
     
 	switch (api)
 	{

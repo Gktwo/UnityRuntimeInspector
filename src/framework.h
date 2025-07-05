@@ -1,9 +1,14 @@
 #pragma once
 
 #define WIN32_LEAN_AND_MEAN
-#include <windows.h>
-
 #include <Windows.h>
+#include <string>
+#include <vector>
+#include <memory>
+#include <mutex>
+#include <filesystem>
+
+
 #include <d3d9.h>
 #include <d3d11.h>
 #include <d3d12.h>
@@ -21,5 +26,6 @@
 // Project includes
 #include "core/renderer.h"
 #include "ui/gui.h"
-#include "utils/hook_manager.h"
+#include "memory/hook_manager.h"
 #include "utils/dx_utils.h"
+#include "utils/helpers.h"

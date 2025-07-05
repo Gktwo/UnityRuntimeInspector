@@ -22,7 +22,7 @@ bool Renderer::initialize()
 		return true;
 
 	// Auto-detect render API
-	RenderAPI detectedAPI = DXUtils::getRenderAPI();
+	RenderAPI detectedAPI = Utils::DXUtils::getRenderAPI();
 	if (detectedAPI == RenderAPI::Unknown)
 		return false;
 

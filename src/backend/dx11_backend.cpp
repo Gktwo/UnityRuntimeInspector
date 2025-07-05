@@ -90,16 +90,16 @@ LRESULT CALLBACK DX11Backend::hookedWndProc(HWND hWnd, UINT uMsg, WPARAM wParam,
 
 bool DX11Backend::setupHooks()
 {
-	HWND tempWindow = DXUtils::createTempWindow();
+	HWND tempWindow = Utils::DXUtils::createTempWindow();
 	if (!tempWindow) return false;
 
 	ID3D11Device* tempDevice = nullptr;
 	ID3D11DeviceContext* tempContext = nullptr;
 	IDXGISwapChain* tempSwapChain = nullptr;
 
-	if (!DXUtils::createTempD3D11Device(tempWindow, &tempDevice, &tempContext, &tempSwapChain))
+	if (!Utils::DXUtils::createTempD3D11Device(tempWindow, &tempDevice, &tempContext, &tempSwapChain))
 	{
-		DXUtils::destroyTempWindow(tempWindow);
+		Utils::DXUtils::destroyTempWindow(tempWindow);
 		return false;
 	}
 
@@ -111,7 +111,7 @@ bool DX11Backend::setupHooks()
 	tempSwapChain->Release();
 	tempContext->Release();
 	tempDevice->Release();
-	DXUtils::destroyTempWindow(tempWindow);
+	Utils::DXUtils::destroyTempWindow(tempWindow);
 
 	// Create hooks
 	auto& hookManager = HookManager::getInstance();
