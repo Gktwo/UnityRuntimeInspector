@@ -6,8 +6,6 @@
 #include "ui/gui.h"
 #include "utils/dx_utils.h"
 
-extern IMGUI_IMPL_API LRESULT ImGui_ImplWin32_WndProcHandler(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
-
 DX11Backend* DX11Backend::s_instance = nullptr;
 DX11Backend::Present_t DX11Backend::m_originalPresent = nullptr;
 DX11Backend::ResizeBuffers_t DX11Backend::m_originalResizeBuffers = nullptr;
@@ -34,14 +32,11 @@ DX11Backend::~DX11Backend()
 
 bool DX11Backend::initialize()
 {
-	if (m_initialized)
-		return true;
+	if (m_initialized) return true;
 
-	if (!HookManager::getInstance().initialize())
-		return false;
+	if (!HookManager::getInstance().initialize()) return false;
 
-	if (!setupHooks())
-		return false;
+	if (!setupHooks()) return false;
 
 	m_initialized = true;
 	return true;
@@ -49,8 +44,7 @@ bool DX11Backend::initialize()
 
 void DX11Backend::shutdown()
 {
-	if (!m_initialized)
-		return;
+	if (!m_initialized) return;
 
 	shutdownImGui();
 	cleanupRenderTarget();
@@ -70,29 +64,26 @@ void DX11Backend::shutdown()
 
 LRESULT CALLBACK DX11Backend::hookedWndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 {
-	if (ImGui_ImplWin32_WndProcHandler(hWnd, uMsg, wParam, lParam))
-		return true;
+	if (ImGui_ImplWin32_WndProcHandler(hWnd, uMsg, wParam, lParam)) return true;
 
-	if (s_instance->onInput(uMsg, wParam, lParam))
+	if (uMsg == WM_KEYDOWN && wParam == VK_INSERT)
+	{
+		GUI& gui = GUI::getInstance();
+		gui.setVisible(!gui.isVisible());
 		return true;
+	}
+
+	// TODO: Handle hotkeys later properly
+	if (s_instance->onInput(uMsg, wParam, lParam)) return true;
 
 	// Handle specific messages
 	switch (uMsg)
 	{
 	case WM_SIZE:
-		if (wParam != SIZE_MINIMIZED)
-			s_instance->onResize(LOWORD(lParam), HIWORD(lParam));
-		break;
-    
-	case WM_KEYDOWN:
-		if (wParam == VK_INSERT)
-		{
-			GUI& gui = GUI::getInstance();
-			gui.setVisible(!gui.isVisible());
-		}
+		if (wParam != SIZE_MINIMIZED) s_instance->onResize(LOWORD(lParam), HIWORD(lParam));
 		break;
 	}
-    
+
 	// Call original window procedure
 	return CallWindowProc(m_originalWndProc, hWnd, uMsg, wParam, lParam);
 }
@@ -100,13 +91,12 @@ LRESULT CALLBACK DX11Backend::hookedWndProc(HWND hWnd, UINT uMsg, WPARAM wParam,
 bool DX11Backend::setupHooks()
 {
 	HWND tempWindow = DXUtils::createTempWindow();
-	if (!tempWindow)
-		return false;
+	if (!tempWindow) return false;
 
 	ID3D11Device* tempDevice = nullptr;
 	ID3D11DeviceContext* tempContext = nullptr;
 	IDXGISwapChain* tempSwapChain = nullptr;
-    
+
 	if (!DXUtils::createTempD3D11Device(tempWindow, &tempDevice, &tempContext, &tempSwapChain))
 	{
 		DXUtils::destroyTempWindow(tempWindow);
@@ -133,15 +123,14 @@ bool DX11Backend::setupHooks()
 	return success;
 }
 
-void DX11Backend::setupWindowHook() {
-	if (m_window && !m_originalWndProc)
-		m_originalWndProc = (WNDPROC)SetWindowLongPtrW(m_window, GWLP_WNDPROC, (LONG_PTR)hookedWndProc);
+void DX11Backend::setupWindowHook()
+{
+	if (m_window && !m_originalWndProc) m_originalWndProc = (WNDPROC)SetWindowLongPtrW(m_window, GWLP_WNDPROC, (LONG_PTR)hookedWndProc);
 }
 
 void* DX11Backend::getVTableFunction(void* instance, int index)
 {
-	if (!instance)
-		return nullptr;
+	if (!instance) return nullptr;
 
 	return (*static_cast<void***>(instance))[index];
 }
@@ -149,61 +138,56 @@ void* DX11Backend::getVTableFunction(void* instance, int index)
 HRESULT WINAPI DX11Backend::hookedPresent(IDXGISwapChain* swapChain, UINT syncInterval, UINT flags)
 {
 	static bool initialized = false;
-	
+
 	if (s_instance && !initialized)
 	{
 		s_instance->m_swapChain = swapChain;
-        
+
 		if (s_instance->getDeviceAndContext())
 		{
 			DXGI_SWAP_CHAIN_DESC desc;
 			swapChain->GetDesc(&desc);
 			s_instance->m_window = desc.OutputWindow;
-            
+
 			// Hook window procedure after we have the real window
 			s_instance->setupWindowHook();
-            
+
 			// Initialize ImGui
 			s_instance->initializeImGui();
 			initialized = true;
 		}
 	}
-    
+
 	if (s_instance && s_instance->m_imguiInitialized)
 	{
 		s_instance->beginFrame();
 		s_instance->renderImGui();
 		s_instance->endFrame();
 	}
-    
+
 	return m_originalPresent(swapChain, syncInterval, flags);
 }
 
 HRESULT WINAPI DX11Backend::hookedResizeBuffers(IDXGISwapChain* swapChain, UINT bufferCount,
-										  UINT width, UINT height, DXGI_FORMAT newFormat, UINT swapChainFlags)
+                                                UINT width, UINT height, DXGI_FORMAT newFormat, UINT swapChainFlags)
 {
-	if (s_instance && s_instance->m_imguiInitialized)
-		s_instance->cleanupRenderTarget();
+	if (s_instance && s_instance->m_imguiInitialized) s_instance->cleanupRenderTarget();
 
 	HRESULT result = m_originalResizeBuffers(swapChain, bufferCount, width, height, newFormat, swapChainFlags);
-    
-	if (s_instance && SUCCEEDED(result) && s_instance->m_imguiInitialized)
-		s_instance->createRenderTarget();
-    
+
+	if (s_instance && SUCCEEDED(result) && s_instance->m_imguiInitialized) s_instance->createRenderTarget();
+
 	return result;
 }
 
 bool DX11Backend::getDeviceAndContext()
 {
-	if (m_device && m_context)
-		return true;
-	
-	if (!m_swapChain)
-		return false;
-	
+	if (m_device && m_context) return true;
+
+	if (!m_swapChain) return false;
+
 	HRESULT hr = m_swapChain->GetDevice(IID_PPV_ARGS(&m_device));
-	if (FAILED(hr))
-		return false;
+	if (FAILED(hr)) return false;
 
 	m_device->GetImmediateContext(&m_context);
 
@@ -217,17 +201,15 @@ bool DX11Backend::getDeviceAndContext()
 
 bool DX11Backend::createRenderTarget()
 {
-	if (!m_swapChain || !m_device)
-		return false;
+	if (!m_swapChain || !m_device) return false;
 
 	ID3D11Texture2D* backBuffer = nullptr;
-	HRESULT hr = m_swapChain->GetBuffer(0, IID_PPV_ARGS(&backBuffer));
-	if (FAILED(hr) || !backBuffer)
-		return false;
+	HRESULT          hr = m_swapChain->GetBuffer(0, IID_PPV_ARGS(&backBuffer));
+	if (FAILED(hr) || !backBuffer) return false;
 
 	hr = m_device->CreateRenderTargetView(backBuffer, nullptr, &m_renderTargetView);
 	backBuffer->Release();
-    
+
 	return SUCCEEDED(hr);
 }
 
@@ -242,13 +224,13 @@ void DX11Backend::cleanupRenderTarget()
 
 bool DX11Backend::initializeImGui()
 {
-	if (m_imguiInitialized || !m_device || !m_context || !m_window)
-		return false;
+	if (m_imguiInitialized || !m_device || !m_context || !m_window) return false;
 
 	ImGui::CreateContext();
-	ImGuiIO& io = ImGui::GetIO(); (void)io;
+	ImGuiIO& io = ImGui::GetIO();
+	(void)io;
 	io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;
-    
+
 	// Setup style
 	ImGui::StyleColorsDark();
 
@@ -261,21 +243,19 @@ bool DX11Backend::initializeImGui()
 
 void DX11Backend::shutdownImGui()
 {
-	if (!m_imguiInitialized)
-		return;
-    
+	if (!m_imguiInitialized) return;
+
 	ImGui_ImplDX11_Shutdown();
 	ImGui_ImplWin32_Shutdown();
 	ImGui::DestroyContext();
-    
+
 	m_imguiInitialized = false;
 }
 
 void DX11Backend::beginFrame()
 {
-	if (!m_imguiInitialized)
-		return;
-    
+	if (!m_imguiInitialized) return;
+
 	ImGui_ImplDX11_NewFrame();
 	ImGui_ImplWin32_NewFrame();
 	ImGui::NewFrame();
@@ -283,8 +263,7 @@ void DX11Backend::beginFrame()
 
 void DX11Backend::endFrame()
 {
-	if (!m_imguiInitialized)
-		return;
+	if (!m_imguiInitialized) return;
 
 	ImGui::EndFrame();
 	ImGui::Render();
@@ -295,7 +274,8 @@ void DX11Backend::endFrame()
 
 void DX11Backend::renderImGui()
 {
-	if (m_imguiInitialized) {
+	if (m_imguiInitialized)
+	{
 		GUI::getInstance().render();
 	}
 }
@@ -308,37 +288,60 @@ int DX11Backend::onInput(UINT msg, WPARAM wParam, LPARAM lParam)
 {
 	ImGuiIO& io = ImGui::GetIO();
 
-	// If ImGui wants to capture the input, we forward it to ImGui
-	if ((io.WantCaptureKeyboard || io.WantCaptureMouse) || isInputMessage(msg))
+	auto isKeyboardMessage = [](UINT msg) -> bool
+	{
+		switch (msg)
+		{
+		case WM_KEYDOWN:
+		case WM_KEYUP:
+		case WM_CHAR:
+		case WM_SYSKEYDOWN:
+		case WM_SYSKEYUP:
+			return true;
+		default:
+			return false;
+		}
+	};
+
+	auto isInputMessage = [](UINT msg) -> bool
+	{
+		switch (msg)
+		{
+		case WM_KEYDOWN:
+		case WM_KEYUP:
+		case WM_CHAR:
+		case WM_SYSKEYDOWN:
+		case WM_SYSKEYUP:
+
+		case WM_MOUSEMOVE:
+		case WM_LBUTTONDOWN:
+		case WM_LBUTTONUP:
+		case WM_RBUTTONDOWN:
+		case WM_RBUTTONUP:
+		case WM_MBUTTONDOWN:
+		case WM_MBUTTONUP:
+		case WM_MOUSEWHEEL:
+		case WM_XBUTTONDOWN:
+		case WM_XBUTTONUP:
+			return true;
+
+		default:
+			return false;
+		}
+	};
+
+	if (io.WantCaptureKeyboard && isKeyboardMessage(msg))
+	{
+		ImGui_ImplWin32_WndProcHandler(m_window, msg, wParam, lParam);
 		return 1;
-	
+	}
+
+	if (io.WantCaptureMouse && isInputMessage(msg))
+	{
+		ImGui_ImplWin32_WndProcHandler(m_window, msg, wParam, lParam);
+		return 1;
+	}
+
 	// TODO: Handle input.
 	return 0;
-}
-
-bool DX11Backend::isInputMessage(UINT msg)
-{
-	switch (msg)
-	{
-	case WM_KEYDOWN:
-	case WM_KEYUP:
-	case WM_CHAR:
-	case WM_SYSKEYDOWN:
-	case WM_SYSKEYUP:
-
-	case WM_MOUSEMOVE:
-	case WM_LBUTTONDOWN:
-	case WM_LBUTTONUP:
-	case WM_RBUTTONDOWN:
-	case WM_RBUTTONUP:
-	case WM_MBUTTONDOWN:
-	case WM_MBUTTONUP:
-	case WM_MOUSEWHEEL:
-	case WM_XBUTTONDOWN:
-	case WM_XBUTTONUP:
-		return true;
-
-	default:
-		return false;
-	}
 }

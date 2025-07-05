@@ -60,5 +60,4 @@ private:
 	bool createRenderTarget();
 	void cleanupRenderTarget();
 	bool getDeviceAndContext();
-	bool isInputMessage(UINT msg); // TODO: Maybe add this to interface
 };

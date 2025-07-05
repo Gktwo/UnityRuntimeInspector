@@ -187,26 +187,31 @@ bool DXUtils::createTempD3D12Device(HWND hwnd, ID3D12Device** device, ID3D12Comm
 		return false;
 	}
 	
-	D3D12_COMMAND_QUEUE_DESC queueDesc;
+	D3D12_COMMAND_QUEUE_DESC queueDesc = {};
 	queueDesc.Type = D3D12_COMMAND_LIST_TYPE_DIRECT;
+	queueDesc.Priority = 0;
 	queueDesc.Flags = D3D12_COMMAND_QUEUE_FLAG_NONE;
+	queueDesc.NodeMask = 0;
 
 	hr = (*device)->CreateCommandQueue(&queueDesc, IID_PPV_ARGS(commandQueue));
 	if (FAILED(hr))
 	{
 		(*device)->Release();
+		*device = nullptr;
 		factory->Release();
 		return false;
 	}
 
 	DXGI_SWAP_CHAIN_DESC1 swapChainDesc = {};
-	swapChainDesc.BufferCount = 2;
 	swapChainDesc.Width = 1;
 	swapChainDesc.Height = 1;
 	swapChainDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
-	swapChainDesc.BufferUsage = DXGI_USAGE_RENDER_TARGET_OUTPUT;
-	swapChainDesc.SwapEffect = DXGI_SWAP_EFFECT_FLIP_DISCARD;
 	swapChainDesc.SampleDesc.Count = 1;
+	swapChainDesc.SampleDesc.Quality = 0;
+	swapChainDesc.BufferUsage = DXGI_USAGE_RENDER_TARGET_OUTPUT;
+	swapChainDesc.BufferCount = 2;
+	swapChainDesc.SwapEffect = DXGI_SWAP_EFFECT_FLIP_DISCARD;
+	swapChainDesc.Flags = 0;
 
 	IDXGISwapChain1* swapChain1 = nullptr;
 	hr = factory->CreateSwapChainForHwnd(
@@ -219,19 +224,25 @@ bool DXUtils::createTempD3D12Device(HWND hwnd, ID3D12Device** device, ID3D12Comm
 	if (FAILED(hr) || !swapChain1)
 	{
 		(*commandQueue)->Release();
+		*commandQueue = nullptr;
 		(*device)->Release();
+		*device = nullptr;
 		factory->Release();
 		return false;
 	}
 
-	IDXGISwapChain3* swapChain3 = nullptr;
-	hr = swapChain1->QueryInterface(IID_PPV_ARGS(&swapChain3));
-	if (FAILED(hr) || !swapChain3)
+	hr = swapChain1->QueryInterface(IID_PPV_ARGS(swapChain));
+
+	// Always release swapChain1 after querying
+	swapChain1->Release();
+	factory->Release();
+	
+	if (FAILED(hr) || !swapChain)
 	{
-		swapChain1->Release();
 		(*commandQueue)->Release();
+		*commandQueue = nullptr;
 		(*device)->Release();
-		factory->Release();
+		*device = nullptr;
 		return false;
 	}
 
