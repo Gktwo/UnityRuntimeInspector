@@ -66,12 +66,26 @@ LRESULT CALLBACK DX11Backend::hookedWndProc(HWND hWnd, UINT uMsg, WPARAM wParam,
 {
 	if (ImGui_ImplWin32_WndProcHandler(hWnd, uMsg, wParam, lParam)) return true;
 
-	if (uMsg == WM_KEYDOWN && wParam == VK_INSERT)
-	{
-		GUI& gui = GUI::getInstance();
-		gui.setVisible(!gui.isVisible());
-		return true;
-	}
+    // Handle hotkeys
+    if (uMsg == WM_KEYDOWN)
+    {
+        GUI& gui = GUI::getInstance();
+		
+        switch (wParam)
+        {
+            case VK_INSERT:
+                gui.setVisible(!gui.isVisible());
+            return true;
+			
+            case VK_F1:
+                if (gui.isVisible())
+                    gui.toggleUnityExplorer();
+            return true;
+			
+            default:
+                break;
+        }
+    }
 
 	// TODO: Handle hotkeys later properly
 	if (s_instance->onInput(uMsg, wParam, lParam)) return true;

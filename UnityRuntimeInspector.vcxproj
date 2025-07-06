@@ -16,7 +16,9 @@
     <ClInclude Include="src\core\main.h" />
     <ClInclude Include="src\core\renderer.h" />
     <ClInclude Include="src\framework.h" />
+    <ClInclude Include="src\inspector\unity_explorer.h" />
     <ClInclude Include="src\memory\hook_manager.h" />
+    <ClInclude Include="src\methods\UnityEngine.CoreModule.hpp" />
     <ClInclude Include="src\pch.h" />
     <ClInclude Include="src\ui\gui.h" />
     <ClInclude Include="src\utils\dx_utils.h" />
@@ -41,6 +43,7 @@
     <ClCompile Include="src\core\main.cpp" />
     <ClCompile Include="src\core\renderer.cpp" />
     <ClCompile Include="src\dllmain.cpp" />
+    <ClCompile Include="src\inspector\unity_explorer.cpp" />
     <ClCompile Include="src\memory\hook_manager.cpp">
       <AssemblerOutput>NoListing</AssemblerOutput>
       <AssemblerListingLocation>E:\Git\UnityRuntimeInspector\bin\Release-x64\obj\</AssemblerListingLocation>
@@ -162,6 +165,9 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">NotUsing</PrecompiledHeader>
     </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="src\methods\method_helpers.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>17.0</VCProjectVersion>

@@ -1,7 +1,17 @@
 ﻿#pragma once
 
-namespace Main
+struct UnityModuleBackendInfo
 {
-	void run();
-	void shutdown();
-}
+    void* module;
+    UnityResolve::Mode mode;
+};
+
+class Main
+{
+public:
+    void run();
+
+private:
+    UnityModuleBackendInfo getUnityBackend();
+    bool initializeUnity();
+};

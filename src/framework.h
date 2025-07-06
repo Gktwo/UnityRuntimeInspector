@@ -15,6 +15,7 @@
 #include <dxgi.h>
 
 #include "UnityResolve.hpp"
+#include "methods/UnityEngine.CoreModule.hpp"
 
 // Include ImGui
 #include <imgui.h>
