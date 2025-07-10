@@ -1,6 +1,7 @@
 ﻿#include "pch.h"
 #include "dx11_backend.h"
 
+#include "NotoSans.hpp"
 #include "imgui_impl_dx11.h"
 #include "imgui_impl_win32.h"
 #include "ui/gui.h"
@@ -244,6 +245,17 @@ bool DX11Backend::initializeImGui()
 	ImGuiIO& io = ImGui::GetIO();
 	(void)io;
 	io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;
+
+    ImFontConfig fontConfig;
+    fontConfig.FontDataOwnedByAtlas = false;
+    
+    io.FontDefault = io.Fonts->AddFontFromMemoryCompressedTTF(
+        NotoSans_compressed_data,
+        *NotoSans_compressed_data,
+        15.0f,
+        &fontConfig,
+        io.Fonts->GetGlyphRangesDefault()
+    );
 
 	// Setup style
 	ImGui::StyleColorsDark();

@@ -19,6 +19,7 @@ private:
     bool m_showSceneExplorer = true;
     bool m_showObjectInspector = true;
     bool m_showInactiveObjects = false;
+    bool m_autoRefresh = false;
     bool m_initialized = false;
 
     // Search and filtering
@@ -45,6 +46,8 @@ public:
 
     // Public interface
     bool isVisible() const { return m_showSceneExplorer || m_showObjectInspector; }
+    bool isAutoRefreshEnabled() const { return m_autoRefresh; }
+    void setAutoRefresh(bool enabled) { m_autoRefresh = enabled; }
 
     void setVisible(bool visible)
     {

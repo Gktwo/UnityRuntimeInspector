@@ -56,7 +56,7 @@ void UnityExplorer::update()
 
     // Auto-refresh check
     float currentTime = ImGui::GetTime();
-    if (currentTime - m_lastRefreshTime > m_refreshInterval)
+    if (m_autoRefresh && (currentTime - m_lastRefreshTime > m_refreshInterval))
     {
         m_needsRefresh = true;
         m_lastRefreshTime = currentTime;
@@ -103,9 +103,10 @@ void UnityExplorer::renderSceneExplorer()
     // Menu bar
     if (ImGui::BeginMenuBar())
     {
-        if (ImGui::BeginMenu("Options"))
+        if (ImGui::BeginMenu("View"))
         {
             ImGui::MenuItem("Show Inactive Objects", nullptr, &m_showInactiveObjects);
+            ImGui::MenuItem("Auto Refresh", nullptr, &m_autoRefresh);
             ImGui::Separator();
             if (ImGui::MenuItem("Refresh Scene", "F5"))
             {
@@ -113,53 +114,129 @@ void UnityExplorer::renderSceneExplorer()
             }
             ImGui::EndMenu();
         }
+
+        if (ImGui::BeginMenu("Options"))
+        {
+            ImGui::MenuItem("Expand All", nullptr, false, false); // TODO: Implement
+            ImGui::MenuItem("Collapse All", nullptr, false, false); // TODO: Implement
+            ImGui::Separator();
+            ImGui::MenuItem("Copy Object Path", nullptr, false, false); // TODO: Implement
+            ImGui::EndMenu();
+        }
+
         ImGui::EndMenuBar();
     }
 
-    // Toolbar
-    if (ImGui::Button("Refresh"))
+    // Toolbar with better styling
+    ImGui::BeginChild("Toolbar", ImVec2(0, 40), true);
+
+    if (ImGui::Button("Refresh", ImVec2(80, 25)))
     {
         m_needsRefresh = true;
     }
     ImGui::SameLine();
-    ImGui::Checkbox("Show Inactive", &m_showInactiveObjects);
 
-    // Search filter
+    ImGui::Checkbox("Show Inactive", &m_showInactiveObjects);
+    ImGui::SameLine();
+
+    if (ImGui::Checkbox("Auto Refresh", &m_autoRefresh))
+    {
+        // Reset the refresh timer when auto-refresh is toggled
+        m_lastRefreshTime = ImGui::GetTime();
+    }
+    ImGui::SameLine();
+
+    // Status indicator
+    ImGui::SetCursorPosX(ImGui::GetCursorPosX() + 20);
+    ImGui::Text("Status:");
+    ImGui::SameLine();
+    if (m_initialized)
+    {
+        ImGui::TextColored(ImVec4(0.2f, 0.8f, 0.2f, 1.0f), "● Connected");
+    }
+    else
+    {
+        ImGui::TextColored(ImVec4(0.8f, 0.2f, 0.2f, 1.0f), "● Disconnected");
+    }
+
+    ImGui::SameLine();
+    ImGui::Separator();
+    ImGui::SameLine();
+
+    // Auto-refresh status indicator
+    if (m_autoRefresh)
+    {
+        ImGui::TextColored(ImVec4(0.2f, 0.8f, 0.2f, 1.0f), "● Auto-refresh: ON");
+    }
+    else
+    {
+        ImGui::TextColored(ImVec4(0.6f, 0.6f, 0.6f, 1.0f), "● Auto-refresh: OFF");
+    }
+
+    ImGui::EndChild();
+
+    // Search filter with better styling
+    ImGui::Spacing();
+    ImGui::Text("Search Objects:");
+    ImGui::SameLine();
+    helpMarker("Filter objects by name. Supports partial matches.");
+
     ImGui::SetNextItemWidth(-1);
-    if (ImGui::InputTextWithHint("##search", "Search objects...", m_searchBuffer, sizeof(m_searchBuffer)))
+    if (ImGui::InputTextWithHint("##search", "Enter object name to filter...", m_searchBuffer, sizeof(m_searchBuffer)))
     {
         m_searchFilter = std::string(m_searchBuffer);
     }
 
+    ImGui::Spacing();
+
+    // Statistics bar
+    ImGui::BeginChild("Stats", ImVec2(0, 30), true);
+    ImGui::Text("Root Objects: %zu", m_rootObjects.size());
+    ImGui::SameLine();
     ImGui::Separator();
-
-    // Status
-    ImGui::Text("Root Objects: %zu | Selected: %s",
-                m_rootObjects.size(),
-                m_selectedObject ? m_selectedObject->name.c_str() : "None");
-
+    ImGui::SameLine();
+    ImGui::Text("Selected: %s", m_selectedObject ? m_selectedObject->name.c_str() : "None");
+    ImGui::SameLine();
     ImGui::Separator();
+    ImGui::SameLine();
+    ImGui::Text("Filtered: %s", m_searchFilter.empty() ? "All" : "Filtered");
+    ImGui::EndChild();
 
-    // Hierarchy tree
+    ImGui::Spacing();
+
+    // Hierarchy tree with better styling
+    ImGui::Text("Scene Hierarchy:");
+    ImGui::SameLine();
+    helpMarker("Click objects to select them. Double-click to expand/collapse.");
+
     ImGui::BeginChild("Hierarchy", ImVec2(0, 0), true, ImGuiWindowFlags_HorizontalScrollbar);
 
-    for (auto& rootObj : m_rootObjects)
+    if (m_rootObjects.empty())
     {
-        if (!rootObj) continue;
-
-        // Apply search filter
-        if (!m_searchFilter.empty() && !matchesFilter(rootObj->name, m_searchFilter))
+        ImGui::SetCursorPosY(ImGui::GetCursorPosY() + 50);
+        ImGui::TextColored(ImVec4(0.6f, 0.6f, 0.6f, 1.0f), "No objects found in scene");
+        ImGui::TextColored(ImVec4(0.6f, 0.6f, 0.6f, 1.0f), "Make sure Unity Explorer is properly initialized");
+    }
+    else
+    {
+        for (auto& rootObj : m_rootObjects)
         {
-            continue;
-        }
+            if (!rootObj) continue;
 
-        // Skip inactive objects if not showing them
-        if (!m_showInactiveObjects && !rootObj->isActive)
-        {
-            continue;
-        }
+            // Apply search filter
+            if (!m_searchFilter.empty() && !matchesFilter(rootObj->name, m_searchFilter))
+            {
+                continue;
+            }
 
-        renderGameObjectNode(rootObj);
+            // Skip inactive objects if not showing them
+            if (!m_showInactiveObjects && !rootObj->isActive)
+            {
+                continue;
+            }
+
+            renderGameObjectNode(rootObj);
+        }
     }
 
     ImGui::EndChild();
@@ -182,16 +259,39 @@ void UnityExplorer::renderGameObjectNode(std::shared_ptr<GameObjectNode> node)
         flags |= ImGuiTreeNodeFlags_Selected;
     }
 
+    // Visual indicators for object state
+    std::string displayName = node->name;
+    std::string icon = "●"; // Default icon
+
+    // Different icons based on object state
+    if (!node->isActive)
+    {
+        icon = "○"; // Inactive object
+    }
+    else if (node->children.empty())
+    {
+        icon = "◆"; // Leaf object
+    }
+    else
+    {
+        icon = "▼"; // Parent object
+    }
+
     // Color inactive objects differently
     if (!node->isActive)
     {
         ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(0.6f, 0.6f, 0.6f, 1.0f));
     }
+    else if (m_selectedObject == node)
+    {
+        ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(0.8f, 0.8f, 1.0f, 1.0f));
+    }
 
-    std::string displayName = node->name;
-    bool nodeOpen = ImGui::TreeNodeEx(node.get(), flags, "%s", displayName.c_str());
+    // Render the tree node with icon
+    bool nodeOpen = ImGui::TreeNodeEx(node.get(), flags, "%s %s", icon.c_str(), displayName.c_str());
 
-    if (!node->isActive)
+    // Restore color
+    if (!node->isActive || m_selectedObject == node)
     {
         ImGui::PopStyleColor();
     }
@@ -203,19 +303,37 @@ void UnityExplorer::renderGameObjectNode(std::shared_ptr<GameObjectNode> node)
         LOG_INFO("[UnityExplorer] Selected object: %s", node->name.c_str());
     }
 
-    // Context menu
+    // Context menu with better organization
     if (ImGui::BeginPopupContextItem())
     {
         ImGui::Text("GameObject: %s", node->name.c_str());
         ImGui::Separator();
-        ImGui::MenuItem("Copy Name", nullptr, false, false); // Placeholder
-        ImGui::MenuItem("Copy Path", nullptr, false, false); // Placeholder
+
+        if (ImGui::MenuItem("Copy Name"))
+        {
+            // TODO: Implement copy to clipboard
+        }
+        if (ImGui::MenuItem("Copy Path"))
+        {
+            // TODO: Implement copy full path
+        }
+        ImGui::Separator();
+        if (ImGui::MenuItem("Focus in Inspector"))
+        {
+            // TODO: Implement focus functionality
+        }
+        if (ImGui::MenuItem("Delete Object", nullptr, false, false))
+        {
+            // TODO: Implement delete functionality
+        }
         ImGui::EndPopup();
     }
 
-    // Show children
+    // Show children with better indentation
     if (nodeOpen)
     {
+        ImGui::Indent(10.0f); // Add some indentation for children
+
         for (auto& child : node->children)
         {
             if (!child) continue;
@@ -234,6 +352,8 @@ void UnityExplorer::renderGameObjectNode(std::shared_ptr<GameObjectNode> node)
 
             renderGameObjectNode(child);
         }
+
+        ImGui::Unindent(10.0f);
         ImGui::TreePop();
     }
 }
@@ -248,8 +368,10 @@ void UnityExplorer::renderObjectInspector()
 
     if (!m_selectedObject || !m_selectedObject->gameObject)
     {
-        ImGui::Text("No object selected");
-        ImGui::Text("Select an object in the Scene Explorer to inspect it.");
+        // Empty state with better styling
+        ImGui::SetCursorPosY(ImGui::GetCursorPosY() + 50);
+        ImGui::TextColored(ImVec4(0.6f, 0.6f, 0.6f, 1.0f), "No object selected");
+        ImGui::TextColored(ImVec4(0.6f, 0.6f, 0.6f, 1.0f), "Select an object in the Scene Explorer to inspect it.");
         ImGui::End();
         return;
     }
@@ -257,19 +379,30 @@ void UnityExplorer::renderObjectInspector()
     auto gameObject = m_selectedObject->gameObject;
     auto transform = m_selectedObject->transform;
 
-    // GameObject info
+    // Header section with object info
+    ImGui::BeginChild("InspectorHeader", ImVec2(0, 60), true);
+    ImGui::TextColored(ImVec4(0.8f, 0.8f, 1.0f, 1.0f), "Inspecting: %s", m_selectedObject->name.c_str());
+    ImGui::Text("Type: GameObject");
+    ImGui::Text("Address: 0x%p", gameObject);
+    ImGui::EndChild();
+
+    ImGui::Spacing();
+
+    // GameObject info section
     renderGameObjectInfo(gameObject);
 
-    ImGui::Separator();
+    ImGui::Spacing();
 
-    // Transform component (always present)
+    // Transform component (always present) with better styling
     if (transform)
     {
         bool transformOpen = m_componentExpandedState["Transform"];
         if (ImGui::CollapsingHeader("Transform", transformOpen ? ImGuiTreeNodeFlags_DefaultOpen : 0))
         {
             m_componentExpandedState["Transform"] = true;
+            ImGui::Indent(10.0f);
             renderTransformComponent(transform);
+            ImGui::Unindent(10.0f);
         }
         else
         {
@@ -277,7 +410,7 @@ void UnityExplorer::renderObjectInspector()
         }
     }
 
-    // Get and render other components
+    // Get and render other components with better organization
     try
     {
         // Try to get specific component types we know about
@@ -289,7 +422,9 @@ void UnityExplorer::renderObjectInspector()
             if (ImGui::CollapsingHeader("Camera", cameraOpen ? ImGuiTreeNodeFlags_DefaultOpen : 0))
             {
                 m_componentExpandedState["Camera"] = true;
+                ImGui::Indent(10.0f);
                 renderCameraComponent(camera);
+                ImGui::Unindent(10.0f);
             }
             else
             {
@@ -305,7 +440,9 @@ void UnityExplorer::renderObjectInspector()
             if (ImGui::CollapsingHeader("Renderer", rendererOpen ? ImGuiTreeNodeFlags_DefaultOpen : 0))
             {
                 m_componentExpandedState["Renderer"] = true;
+                ImGui::Indent(10.0f);
                 renderRendererComponent(renderer);
+                ImGui::Unindent(10.0f);
             }
             else
             {
@@ -321,7 +458,9 @@ void UnityExplorer::renderObjectInspector()
             if (ImGui::CollapsingHeader("Rigidbody", rigidbodyOpen ? ImGuiTreeNodeFlags_DefaultOpen : 0))
             {
                 m_componentExpandedState["Rigidbody"] = true;
+                ImGui::Indent(10.0f);
                 renderRigidbodyComponent(rigidbody);
+                ImGui::Unindent(10.0f);
             }
             else
             {
@@ -337,7 +476,9 @@ void UnityExplorer::renderObjectInspector()
             if (ImGui::CollapsingHeader("Collider", colliderOpen ? ImGuiTreeNodeFlags_DefaultOpen : 0))
             {
                 m_componentExpandedState["Collider"] = true;
+                ImGui::Indent(10.0f);
                 renderColliderComponent(collider);
+                ImGui::Unindent(10.0f);
             }
             else
             {
@@ -361,9 +502,14 @@ void UnityExplorer::renderGameObjectInfo(UnityResolve::UnityType::GameObject* ga
     if (ImGui::CollapsingHeader("GameObject", gameObjectOpen ? ImGuiTreeNodeFlags_DefaultOpen : 0))
     {
         m_componentExpandedState["GameObject"] = true;
+        ImGui::Indent(10.0f);
 
         try
         {
+            // Basic properties section
+            ImGui::Text("Basic Properties:");
+            ImGui::Separator();
+
             // Name
             std::string name = getSafeString(gameObject->GetName());
             ImGui::Text("Name: %s", name.c_str());
@@ -372,31 +518,59 @@ void UnityExplorer::renderGameObjectInfo(UnityResolve::UnityType::GameObject* ga
             std::string tag = getSafeString(gameObject->GetTag());
             ImGui::Text("Tag: %s", tag.c_str());
 
-            // Active state
+            ImGui::Spacing();
+
+            // State properties section
+            ImGui::Text("State Properties:");
+            ImGui::Separator();
+
+            // Active state with colored indicators
             bool activeSelf = gameObject->GetActiveSelf();
             bool activeInHierarchy = gameObject->GetActiveInHierarchy();
 
             ImGui::Text("Active Self: ");
             ImGui::SameLine();
-            textColored(activeSelf ? ImVec4(0, 1, 0, 1) : ImVec4(1, 0, 0, 1), "%s", activeSelf ? "True" : "False");
+            textColored(activeSelf ? ImVec4(0.2f, 0.8f, 0.2f, 1.0f) : ImVec4(0.8f, 0.2f, 0.2f, 1.0f),
+                        "%s %s", activeSelf ? "●" : "○", activeSelf ? "True" : "False");
 
             ImGui::Text("Active in Hierarchy: ");
             ImGui::SameLine();
-            textColored(activeInHierarchy ? ImVec4(0, 1, 0, 1) : ImVec4(1, 0, 0, 1), "%s",
-                        activeInHierarchy ? "True" : "False");
+            textColored(activeInHierarchy ? ImVec4(0.2f, 0.8f, 0.2f, 1.0f) : ImVec4(0.8f, 0.2f, 0.2f, 1.0f),
+                        "%s %s", activeInHierarchy ? "●" : "○", activeInHierarchy ? "True" : "False");
 
             // Static
             bool isStatic = gameObject->GetIsStatic();
-            ImGui::Text("Static: %s", isStatic ? "True" : "False");
+            ImGui::Text("Static: ");
+            ImGui::SameLine();
+            textColored(isStatic ? ImVec4(0.8f, 0.8f, 0.2f, 1.0f) : ImVec4(0.6f, 0.6f, 0.6f, 1.0f),
+                        "%s %s", isStatic ? "●" : "○", isStatic ? "True" : "False");
+
+            ImGui::Spacing();
+
+            // Technical info section
+            ImGui::Text("Technical Information:");
+            ImGui::Separator();
 
             // Address info
-            ImGui::Separator();
             ImGui::Text("Address: 0x%p", gameObject);
+
+            // // Layer info
+            // try
+            // {
+            //     int layer = gameObject->GetLayer();
+            //     ImGui::Text("Layer: %d", layer);
+            // }
+            // catch (...)
+            // {
+            //     ImGui::Text("Layer: <Error reading>");
+            // }
         }
         catch (...)
         {
             ImGui::TextColored(ImVec4(1, 0.5f, 0.5f, 1), "Error reading GameObject data");
         }
+
+        ImGui::Unindent(10.0f);
     }
     else
     {
@@ -410,39 +584,43 @@ void UnityExplorer::renderTransformComponent(UnityResolve::UnityType::Transform*
 
     try
     {
-        // World Transform
+        // World Transform section
         ImGui::Text("World Transform:");
+        ImGui::Separator();
 
         auto position = transform->GetPosition();
         renderVector3Field("Position", position);
 
         auto rotation = transform->GetRotation();
         auto eulerAngles = rotation.ToEuler();
-        renderVector3Field("Rotation", eulerAngles);
-        renderQuaternionField("Rotation (Quat)", rotation);
+        renderVector3Field("Rotation (Euler)", eulerAngles);
+        renderQuaternionField("Rotation (Quaternion)", rotation);
 
         auto scale = transform->GetLocalScale();
         renderVector3Field("Scale", scale);
 
-        ImGui::Separator();
+        ImGui::Spacing();
 
-        // Local Transform
+        // Local Transform section
         ImGui::Text("Local Transform:");
+        ImGui::Separator();
 
         auto localPos = transform->GetLocalPosition();
         renderVector3Field("Local Position", localPos);
 
         auto localRot = transform->GetLocalRotation();
         auto localEuler = localRot.ToEuler();
-        renderVector3Field("Local Rotation", localEuler);
+        renderVector3Field("Local Rotation (Euler)", localEuler);
+        renderQuaternionField("Local Rotation (Quaternion)", localRot);
 
         auto localScale = transform->GetLocalScale();
         renderVector3Field("Local Scale", localScale);
 
-        ImGui::Separator();
+        ImGui::Spacing();
 
-        // Hierarchy info
-        ImGui::Text("Hierarchy:");
+        // Hierarchy info section
+        ImGui::Text("Hierarchy Information:");
+        ImGui::Separator();
 
         int childCount = transform->GetChildCount();
         ImGui::Text("Children: %d", childCount);
@@ -456,11 +634,33 @@ void UnityExplorer::renderTransformComponent(UnityResolve::UnityType::Transform*
                 std::string parentName = getSafeString(parentGO->GetName());
                 ImGui::Text("Parent: %s", parentName.c_str());
             }
+            else
+            {
+                ImGui::Text("Parent: <Unknown GameObject>");
+            }
         }
         else
         {
-            ImGui::Text("Parent: None (Root)");
+            ImGui::Text("Parent: None (Root Object)");
         }
+
+        // Sibling info
+        // try
+        // {
+        //     int siblingIndex = transform->GetSiblingIndex();
+        //     ImGui::Text("Sibling Index: %d", siblingIndex);
+        // }
+        // catch (...)
+        // {
+        //     ImGui::Text("Sibling Index: <Error reading>");
+        // }
+
+        ImGui::Spacing();
+
+        // Technical info section
+        ImGui::Text("Technical Information:");
+        ImGui::Separator();
+        ImGui::Text("Transform Address: 0x%p", transform);
     }
     catch (...)
     {
@@ -737,7 +937,22 @@ void UnityExplorer::renderVector3Field(const char* label, const UnityResolve::Un
 {
     ImGui::Text("%s:", label);
     ImGui::SameLine();
-    ImGui::Text("(%.3f, %.3f, %.3f)", vec.x, vec.y, vec.z);
+    ImGui::SetCursorPosX(ImGui::GetCursorPosX() + 20);
+
+    // Color code the values for better readability
+    ImGui::Text("X: ");
+    ImGui::SameLine();
+    ImGui::TextColored(ImVec4(1.0f, 0.5f, 0.5f, 1.0f), "%.3f", vec.x);
+    ImGui::SameLine();
+
+    ImGui::Text("Y: ");
+    ImGui::SameLine();
+    ImGui::TextColored(ImVec4(0.5f, 1.0f, 0.5f, 1.0f), "%.3f", vec.y);
+    ImGui::SameLine();
+
+    ImGui::Text("Z: ");
+    ImGui::SameLine();
+    ImGui::TextColored(ImVec4(0.5f, 0.5f, 1.0f, 1.0f), "%.3f", vec.z);
 }
 
 void UnityExplorer::renderQuaternionField(const char* label, const UnityResolve::UnityType::Quaternion& quat,
@@ -745,17 +960,58 @@ void UnityExplorer::renderQuaternionField(const char* label, const UnityResolve:
 {
     ImGui::Text("%s:", label);
     ImGui::SameLine();
-    ImGui::Text("(%.3f, %.3f, %.3f, %.3f)", quat.x, quat.y, quat.z, quat.w);
+    ImGui::SetCursorPosX(ImGui::GetCursorPosX() + 20);
+
+    // Color code the values for better readability
+    ImGui::Text("X: ");
+    ImGui::SameLine();
+    ImGui::TextColored(ImVec4(1.0f, 0.5f, 0.5f, 1.0f), "%.3f", quat.x);
+    ImGui::SameLine();
+
+    ImGui::Text("Y: ");
+    ImGui::SameLine();
+    ImGui::TextColored(ImVec4(0.5f, 1.0f, 0.5f, 1.0f), "%.3f", quat.y);
+    ImGui::SameLine();
+
+    ImGui::Text("Z: ");
+    ImGui::SameLine();
+    ImGui::TextColored(ImVec4(0.5f, 0.5f, 1.0f, 1.0f), "%.3f", quat.z);
+    ImGui::SameLine();
+
+    ImGui::Text("W: ");
+    ImGui::SameLine();
+    ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.5f, 1.0f), "%.3f", quat.w);
 }
 
 void UnityExplorer::renderColorField(const char* label, const UnityResolve::UnityType::Color& color, bool readOnly)
 {
     ImGui::Text("%s:", label);
     ImGui::SameLine();
+    ImGui::SetCursorPosX(ImGui::GetCursorPosX() + 20);
+
     ImVec4 colorVec(color.r, color.g, color.b, color.a);
     ImGui::ColorButton("##color", colorVec, ImGuiColorEditFlags_NoTooltip | ImGuiColorEditFlags_NoInputs);
     ImGui::SameLine();
-    ImGui::Text("(%.3f, %.3f, %.3f, %.3f)", color.r, color.g, color.b, color.a);
+
+    // Color code the RGBA values
+    ImGui::Text("R: ");
+    ImGui::SameLine();
+    ImGui::TextColored(ImVec4(1.0f, 0.5f, 0.5f, 1.0f), "%.3f", color.r);
+    ImGui::SameLine();
+
+    ImGui::Text("G: ");
+    ImGui::SameLine();
+    ImGui::TextColored(ImVec4(0.5f, 1.0f, 0.5f, 1.0f), "%.3f", color.g);
+    ImGui::SameLine();
+
+    ImGui::Text("B: ");
+    ImGui::SameLine();
+    ImGui::TextColored(ImVec4(0.5f, 0.5f, 1.0f, 1.0f), "%.3f", color.b);
+    ImGui::SameLine();
+
+    ImGui::Text("A: ");
+    ImGui::SameLine();
+    ImGui::TextColored(ImVec4(1.0f, 1.0f, 1.0f, 1.0f), "%.3f", color.a);
 }
 
 void UnityExplorer::helpMarker(const char* desc)
