@@ -123,12 +123,6 @@ void GUI::renderMainMenuBar()
 
             ImGui::Separator();
 
-            //if (ImGui::MenuItem(LANG("Test Language System")))
-            //{
-            //    testLanguageSystem();
-            //}
-
-            ImGui::Separator();
 
             if (ImGui::BeginMenu(LANG("Theme")))
             {
@@ -141,7 +135,7 @@ void GUI::renderMainMenuBar()
                 if (ImGui::MenuItem(LANG("Light")))
                 {
                     ImGui::StyleColorsLight();
-                    // Don't call setupImGuiStyle() for light theme to preserve ImGui's light colors
+                
                     LOG_INFO("[GUI] Switched to Light theme");
                 }
                 if (ImGui::MenuItem(LANG("Classic")))
@@ -190,12 +184,12 @@ void GUI::renderMainMenuBar()
         {
             if (ImGui::MenuItem(LANG("About Unity Runtime Inspector")))
             {
-                ImGui::OpenPopup(LANG("About Unity Runtime Inspector"));
+                m_showAboutModal = true;
             }
             ImGui::Separator();
             if (ImGui::MenuItem(LANG("Controls Reference")))
             {
-                ImGui::OpenPopup(LANG("Controls Reference"));
+                m_showControlsModal = true;
             }
             ImGui::EndMenu();
         }
@@ -483,6 +477,13 @@ void GUI::renderExampleWindow()
 
 void GUI::renderAboutModal()
 {
+    // About Modal
+    if (m_showAboutModal)
+    {
+        ImGui::OpenPopup(LANG("About Unity Runtime Inspector"));
+        m_showAboutModal = false;
+    }
+    
     if (ImGui::BeginPopupModal(LANG("About Unity Runtime Inspector"), nullptr, ImGuiWindowFlags_AlwaysAutoResize))
     {
         // Header
@@ -528,6 +529,12 @@ void GUI::renderAboutModal()
     }
 
     // Controls Reference Modal
+    if (m_showControlsModal)
+    {
+        ImGui::OpenPopup(LANG("Controls Reference"));
+        m_showControlsModal = false;
+    }
+    
     if (ImGui::BeginPopupModal(LANG("Controls Reference"), nullptr, ImGuiWindowFlags_AlwaysAutoResize))
     {
         ImGui::PushFont(ImGui::GetIO().Fonts->Fonts[0]);

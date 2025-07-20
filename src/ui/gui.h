@@ -37,6 +37,8 @@ private:
     bool m_visible = true;
     bool m_showExample = true;
     bool m_showUnityExplorer = false;
+    bool m_showAboutModal = false;
+    bool m_showControlsModal = false;
 
     // Unity Explorer
     std::unique_ptr<UnityExplorer> m_unityExplorer;
