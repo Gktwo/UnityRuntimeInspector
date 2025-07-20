@@ -23,8 +23,19 @@ bool Renderer::initialize()
 
 	// Auto-detect render API
 	RenderAPI detectedAPI = Utils::DXUtils::getRenderAPI();
-	if (detectedAPI == RenderAPI::Unknown)
-		return false;
+    //printf("renderapi:%s", detectedAPI);
+    switch (detectedAPI){
+        case RenderAPI::DirectX11:
+            printf("found dx11\n");
+            break;
+        case RenderAPI::DirectX12:
+            printf("found dx12\n");
+            break;
+        case RenderAPI::Unknown:
+			return false;
+
+	}
+
 
 	return initialize(detectedAPI);
 }
@@ -86,8 +97,10 @@ std::unique_ptr<IRendererBackend> Renderer::createBackend(RenderAPI api)
 		// TODO: Implement DirectX9 backend
 		return nullptr;
 	case RenderAPI::DirectX11:
+        printf("init dx11 imgui\n");
 		return std::make_unique<DX11Backend>();
 	case RenderAPI::DirectX12:
+        printf("init dx12 imgui\n");
 		// TODO: Implement DirectX12 backend
 		return nullptr;
 	default:

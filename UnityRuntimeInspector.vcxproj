@@ -47,10 +47,10 @@
     <ClCompile Include="src\inspector\unity_explorer.cpp" />
     <ClCompile Include="src\memory\hook_manager.cpp">
       <AssemblerOutput>NoListing</AssemblerOutput>
-      <AssemblerListingLocation>E:\Git\UnityRuntimeInspector\bin\Release-x64\obj\</AssemblerListingLocation>
+      <AssemblerListingLocation>F:\vsxm\cpp\UnityRuntimeInspector\bin\Release-x64\obj\</AssemblerListingLocation>
       <UndefineAllPreprocessorDefinitions>false</UndefineAllPreprocessorDefinitions>
       <BrowseInformation>false</BrowseInformation>
-      <BrowseInformationFile>E:\Git\UnityRuntimeInspector\bin\Release-x64\obj\</BrowseInformationFile>
+      <BrowseInformationFile>F:\vsxm\cpp\UnityRuntimeInspector\bin\Release-x64\obj\</BrowseInformationFile>
       <BasicRuntimeChecks>Default</BasicRuntimeChecks>
       <CompileAs>Default</CompileAs>
       <UseDynamicDebugging>false</UseDynamicDebugging>
@@ -76,18 +76,18 @@
       <LanguageStandard>stdcpp20</LanguageStandard>
       <LanguageStandard_C>Default</LanguageStandard_C>
       <MinimalRebuild>false</MinimalRebuild>
-      <ModuleDependenciesFile>E:\Git\UnityRuntimeInspector\bin\Release-x64\obj\</ModuleDependenciesFile>
-      <ModuleOutputFile>E:\Git\UnityRuntimeInspector\bin\Release-x64\obj\</ModuleOutputFile>
+      <ModuleDependenciesFile>F:\vsxm\cpp\UnityRuntimeInspector\bin\Release-x64\obj\</ModuleDependenciesFile>
+      <ModuleOutputFile>F:\vsxm\cpp\UnityRuntimeInspector\bin\Release-x64\obj\</ModuleOutputFile>
       <OmitDefaultLibName>false</OmitDefaultLibName>
       <FavorSizeOrSpeed>Neither</FavorSizeOrSpeed>
       <WholeProgramOptimization>true</WholeProgramOptimization>
       <Optimization>MaxSpeed</Optimization>
-      <ObjectFileName>E:\Git\UnityRuntimeInspector\bin\Release-x64\obj\</ObjectFileName>
+      <ObjectFileName>F:\vsxm\cpp\UnityRuntimeInspector\bin\Release-x64\obj\</ObjectFileName>
       <CallingConvention>Cdecl</CallingConvention>
-      <ProgramDataBaseFileName>E:\Git\UnityRuntimeInspector\bin\Release-x64\obj\vc143.pdb</ProgramDataBaseFileName>
+      <ProgramDataBaseFileName>F:\vsxm\cpp\UnityRuntimeInspector\bin\Release-x64\obj\vc143.pdb</ProgramDataBaseFileName>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
-      <PrecompiledHeaderOutputFile>E:\Git\UnityRuntimeInspector\bin\Release-x64\obj\UnityRuntimeInspector.pch</PrecompiledHeaderOutputFile>
+      <PrecompiledHeaderOutputFile>F:\vsxm\cpp\UnityRuntimeInspector\bin\Release-x64\obj\UnityRuntimeInspector.pch</PrecompiledHeaderOutputFile>
       <PreprocessToFile>false</PreprocessToFile>
       <PreprocessKeepComments>false</PreprocessKeepComments>
       <PreprocessSuppressLineNumbers>false</PreprocessSuppressLineNumbers>
@@ -95,21 +95,21 @@
       <RuntimeLibrary>MultiThreadedDll</RuntimeLibrary>
       <ScanSourceForModuleDependencies>false</ScanSourceForModuleDependencies>
       <ShowIncludes>false</ShowIncludes>
-      <SourceDependenciesFile>E:\Git\UnityRuntimeInspector\bin\Release-x64\obj\</SourceDependenciesFile>
+      <SourceDependenciesFile>F:\vsxm\cpp\UnityRuntimeInspector\bin\Release-x64\obj\</SourceDependenciesFile>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <BufferSecurityCheck>true</BufferSecurityCheck>
       <SmallerTypeCheck>false</SmallerTypeCheck>
       <SpectreMitigation>false</SpectreMitigation>
       <StructMemberAlignment>Default</StructMemberAlignment>
       <SupportJustMyCode>false</SupportJustMyCode>
-      <TrackerLogDirectory>E:\Git\UnityRuntimeInspector\bin\Release-x64\obj\UnityRun.7860a162.tlog\</TrackerLogDirectory>
+      <TrackerLogDirectory>F:\vsxm\cpp\UnityRuntimeInspector\bin\Release-x64\obj\UnityRun.7860a162.tlog\</TrackerLogDirectory>
       <TranslateIncludes>false</TranslateIncludes>
       <MinimalRebuildFromTracking>true</MinimalRebuildFromTracking>
       <TreatWarningAsError>false</TreatWarningAsError>
       <TreatWChar_tAsBuiltInType>true</TreatWChar_tAsBuiltInType>
       <UseFullPaths>true</UseFullPaths>
       <WarningLevel>Level3</WarningLevel>
-      <XMLDocumentationFileName>E:\Git\UnityRuntimeInspector\bin\Release-x64\obj\</XMLDocumentationFileName>
+      <XMLDocumentationFileName>F:\vsxm\cpp\UnityRuntimeInspector\bin\Release-x64\obj\</XMLDocumentationFileName>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
       <IntelJCCErratum>false</IntelJCCErratum>
       <BuildStlModules>false</BuildStlModules>
@@ -120,7 +120,7 @@
       <PreprocessorDefinitions>_WINDOWS;_SILENCE_CXX17_CODECVT_HEADER_DEPRECATION_WARNING;_CRT_SECURE_NO_WARNINGS;NDEBUG;UNITYRUNTIMEINSPECTOR_EXPORTS;_WINDOWS;_USRDLL;_WINDLL;_UNICODE;UNICODE;</PreprocessorDefinitions>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>E:\Git\UnityRuntimeInspector\src;E:\Git\UnityRuntimeInspector\vendor\UnityResolve;E:\Git\UnityRuntimeInspector\vendor\imgui;E:\Git\UnityRuntimeInspector\vendor\imgui\misc;E:\Git\UnityRuntimeInspector\vendor\imgui\backends;E:\Git\UnityRuntimeInspector\vendor\minhook\include;</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>F:\vsxm\cpp\UnityRuntimeInspector\src;F:\vsxm\cpp\UnityRuntimeInspector\vendor\UnityResolve;F:\vsxm\cpp\UnityRuntimeInspector\vendor\imgui;F:\vsxm\cpp\UnityRuntimeInspector\vendor\imgui\misc;F:\vsxm\cpp\UnityRuntimeInspector\vendor\imgui\backends;F:\vsxm\cpp\UnityRuntimeInspector\vendor\minhook\include;</AdditionalIncludeDirectories>
       <LinkCompiled>true</LinkCompiled>
     </ClCompile>
     <ClCompile Include="src\pch.cpp">
@@ -210,6 +210,7 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <OutDir>$(SolutionDir)bin\$(Configuration)-$(Platform)\</OutDir>
     <IntDir>$(SolutionDir)bin\$(Configuration)-$(Platform)\obj\</IntDir>
+    <IncludePath>$(ProjectDir)\src;$(ProjectDir)\vendor\imgui\backends;$(ProjectDir)\vendor\UnityResolve;$(ProjectDir)\vendor\imgui;$(ProjectDir)\vendor\minhook\include;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
