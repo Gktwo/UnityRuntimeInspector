@@ -47,10 +47,10 @@
     <ClCompile Include="src\inspector\unity_explorer.cpp" />
     <ClCompile Include="src\memory\hook_manager.cpp">
       <AssemblerOutput>NoListing</AssemblerOutput>
-      <AssemblerListingLocation>F:\vsxm\cpp\UnityRuntimeInspector\bin\Release-x64\obj\</AssemblerListingLocation>
+      <AssemblerListingLocation>$(IntDir)</AssemblerListingLocation>
       <UndefineAllPreprocessorDefinitions>false</UndefineAllPreprocessorDefinitions>
       <BrowseInformation>false</BrowseInformation>
-      <BrowseInformationFile>F:\vsxm\cpp\UnityRuntimeInspector\bin\Release-x64\obj\</BrowseInformationFile>
+      <BrowseInformationFile>$(IntDir)</BrowseInformationFile>
       <BasicRuntimeChecks>Default</BasicRuntimeChecks>
       <CompileAs>Default</CompileAs>
       <UseDynamicDebugging>false</UseDynamicDebugging>
@@ -76,18 +76,18 @@
       <LanguageStandard>stdcpp20</LanguageStandard>
       <LanguageStandard_C>Default</LanguageStandard_C>
       <MinimalRebuild>false</MinimalRebuild>
-      <ModuleDependenciesFile>F:\vsxm\cpp\UnityRuntimeInspector\bin\Release-x64\obj\</ModuleDependenciesFile>
-      <ModuleOutputFile>F:\vsxm\cpp\UnityRuntimeInspector\bin\Release-x64\obj\</ModuleOutputFile>
+      <ModuleDependenciesFile>$(IntDir)</ModuleDependenciesFile>
+      <ModuleOutputFile>$(IntDir)</ModuleOutputFile>
       <OmitDefaultLibName>false</OmitDefaultLibName>
       <FavorSizeOrSpeed>Neither</FavorSizeOrSpeed>
       <WholeProgramOptimization>true</WholeProgramOptimization>
       <Optimization>MaxSpeed</Optimization>
-      <ObjectFileName>F:\vsxm\cpp\UnityRuntimeInspector\bin\Release-x64\obj\</ObjectFileName>
+      <ObjectFileName>$(IntDir)</ObjectFileName>
       <CallingConvention>Cdecl</CallingConvention>
-      <ProgramDataBaseFileName>F:\vsxm\cpp\UnityRuntimeInspector\bin\Release-x64\obj\vc143.pdb</ProgramDataBaseFileName>
+      <ProgramDataBaseFileName>$(IntDir)vc143.pdb</ProgramDataBaseFileName>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
-      <PrecompiledHeaderOutputFile>F:\vsxm\cpp\UnityRuntimeInspector\bin\Release-x64\obj\UnityRuntimeInspector.pch</PrecompiledHeaderOutputFile>
+      <PrecompiledHeaderOutputFile>$(IntDir)UnityRuntimeInspector.pch</PrecompiledHeaderOutputFile>
       <PreprocessToFile>false</PreprocessToFile>
       <PreprocessKeepComments>false</PreprocessKeepComments>
       <PreprocessSuppressLineNumbers>false</PreprocessSuppressLineNumbers>
@@ -95,21 +95,21 @@
       <RuntimeLibrary>MultiThreadedDll</RuntimeLibrary>
       <ScanSourceForModuleDependencies>false</ScanSourceForModuleDependencies>
       <ShowIncludes>false</ShowIncludes>
-      <SourceDependenciesFile>F:\vsxm\cpp\UnityRuntimeInspector\bin\Release-x64\obj\</SourceDependenciesFile>
+      <SourceDependenciesFile>$(IntDir)</SourceDependenciesFile>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <BufferSecurityCheck>true</BufferSecurityCheck>
       <SmallerTypeCheck>false</SmallerTypeCheck>
       <SpectreMitigation>false</SpectreMitigation>
       <StructMemberAlignment>Default</StructMemberAlignment>
       <SupportJustMyCode>false</SupportJustMyCode>
-      <TrackerLogDirectory>F:\vsxm\cpp\UnityRuntimeInspector\bin\Release-x64\obj\UnityRun.7860a162.tlog\</TrackerLogDirectory>
+      <TrackerLogDirectory>$(IntDir)UnityRun.7860a162.tlog\</TrackerLogDirectory>
       <TranslateIncludes>false</TranslateIncludes>
       <MinimalRebuildFromTracking>true</MinimalRebuildFromTracking>
       <TreatWarningAsError>false</TreatWarningAsError>
       <TreatWChar_tAsBuiltInType>true</TreatWChar_tAsBuiltInType>
       <UseFullPaths>true</UseFullPaths>
       <WarningLevel>Level3</WarningLevel>
-      <XMLDocumentationFileName>F:\vsxm\cpp\UnityRuntimeInspector\bin\Release-x64\obj\</XMLDocumentationFileName>
+      <XMLDocumentationFileName>$(IntDir)</XMLDocumentationFileName>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
       <IntelJCCErratum>false</IntelJCCErratum>
       <BuildStlModules>false</BuildStlModules>
@@ -120,7 +120,7 @@
       <PreprocessorDefinitions>_WINDOWS;_SILENCE_CXX17_CODECVT_HEADER_DEPRECATION_WARNING;_CRT_SECURE_NO_WARNINGS;NDEBUG;UNITYRUNTIMEINSPECTOR_EXPORTS;_WINDOWS;_USRDLL;_WINDLL;_UNICODE;UNICODE;</PreprocessorDefinitions>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>F:\vsxm\cpp\UnityRuntimeInspector\src;F:\vsxm\cpp\UnityRuntimeInspector\vendor\UnityResolve;F:\vsxm\cpp\UnityRuntimeInspector\vendor\imgui;F:\vsxm\cpp\UnityRuntimeInspector\vendor\imgui\misc;F:\vsxm\cpp\UnityRuntimeInspector\vendor\imgui\backends;F:\vsxm\cpp\UnityRuntimeInspector\vendor\minhook\include;</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)src;$(ProjectDir)vendor\UnityResolve;$(ProjectDir)vendor\imgui;$(ProjectDir)vendor\imgui\misc;$(ProjectDir)vendor\imgui\backends;$(ProjectDir)vendor\minhook\include;</AdditionalIncludeDirectories>
       <LinkCompiled>true</LinkCompiled>
     </ClCompile>
     <ClCompile Include="src\pch.cpp">
