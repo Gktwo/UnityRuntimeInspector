@@ -136,16 +136,19 @@ void GUI::renderMainMenuBar()
                 {
                     ImGui::StyleColorsDark();
                     setupImGuiStyle();
+                    LOG_INFO("[GUI] Switched to Dark theme");
                 }
                 if (ImGui::MenuItem(LANG("Light")))
                 {
                     ImGui::StyleColorsLight();
-                    setupImGuiStyle();
+                    // Don't call setupImGuiStyle() for light theme to preserve ImGui's light colors
+                    LOG_INFO("[GUI] Switched to Light theme");
                 }
                 if (ImGui::MenuItem(LANG("Classic")))
                 {
                     ImGui::StyleColorsClassic();
-                    setupImGuiStyle();
+                    // Don't call setupImGuiStyle() for classic theme to preserve ImGui's classic colors
+                    LOG_INFO("[GUI] Switched to Classic theme");
                 }
                 
                 // Language submenu
