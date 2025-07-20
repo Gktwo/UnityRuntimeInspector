@@ -1,11 +1,23 @@
 ﻿#include "pch.h"
 #include "gui.h"
+#include "language.h"
 
 #include "inspector/unity_explorer.h"
 
 GUI::GUI()
 {
     setupImGuiStyle();
+    
+    // Initialize language system
+    if (!Language::getInstance().initialize())
+    {
+        LOG_WARNING("[GUI] Failed to initialize language system, using fallback text");
+    }
+    else
+    {
+        LOG_INFO("[GUI] Language system initialized successfully");
+        LOG_INFO("[GUI] Current language: %s", Language::getInstance().getLanguageName(Language::getInstance().getCurrentLanguage()));
+    }
 }
 
 GUI::~GUI()
@@ -70,9 +82,9 @@ void GUI::renderMainMenuBar()
     if (ImGui::BeginMainMenuBar())
     {
         // File menu
-        if (ImGui::BeginMenu("File"))
+        if (ImGui::BeginMenu(MENU_FILE))
         {
-            if (ImGui::MenuItem("Exit", "Alt+F4"))
+            if (ImGui::MenuItem(LANG("Exit"), "Alt+F4"))
             {
                 // TODO: Implement exit functionality
             }
@@ -80,12 +92,12 @@ void GUI::renderMainMenuBar()
         }
 
         // Windows menu
-        if (ImGui::BeginMenu("Windows"))
+        if (ImGui::BeginMenu(MENU_WINDOWS))
         {
-            ImGui::MenuItem("Example Window", nullptr, &m_showExample);
+            ImGui::MenuItem(LANG("Example Window"), nullptr, &m_showExample);
             ImGui::Separator();
 
-            if (ImGui::MenuItem("Unity Explorer", "F1", &m_showUnityExplorer))
+            if (ImGui::MenuItem(LANG("Unity Explorer"), "F1", &m_showUnityExplorer))
             {
                 if (m_showUnityExplorer && !m_unityExplorerInitialized)
                 {
@@ -97,9 +109,9 @@ void GUI::renderMainMenuBar()
         }
 
         // Tools menu
-        if (ImGui::BeginMenu("Tools"))
+        if (ImGui::BeginMenu(MENU_TOOLS))
         {
-            if (ImGui::MenuItem("Refresh Unity Explorer", "F5"))
+            if (ImGui::MenuItem(LANG("Refresh Unity Explorer"), "F5"))
             {
                 if (m_unityExplorer && m_unityExplorerInitialized)
                 {
@@ -111,23 +123,59 @@ void GUI::renderMainMenuBar()
 
             ImGui::Separator();
 
-            if (ImGui::BeginMenu("Theme"))
+            //if (ImGui::MenuItem(LANG("Test Language System")))
+            //{
+            //    testLanguageSystem();
+            //}
+
+            ImGui::Separator();
+
+            if (ImGui::BeginMenu(LANG("Theme")))
             {
-                if (ImGui::MenuItem("Dark (Default)"))
+                if (ImGui::MenuItem(LANG("Dark (Default)")))
                 {
                     ImGui::StyleColorsDark();
                     setupImGuiStyle();
                 }
-                if (ImGui::MenuItem("Light"))
+                if (ImGui::MenuItem(LANG("Light")))
                 {
                     ImGui::StyleColorsLight();
                     setupImGuiStyle();
                 }
-                if (ImGui::MenuItem("Classic"))
+                if (ImGui::MenuItem(LANG("Classic")))
                 {
                     ImGui::StyleColorsClassic();
                     setupImGuiStyle();
                 }
+                
+                // Language submenu
+                ImGui::Separator();
+                 if (ImGui::BeginMenu(LANG("Language")))
+                {
+                    // Get current language for comparison
+                    LanguageType currentLang = Language::getInstance().getCurrentLanguage();
+                    
+                    // Create radio button style language selection
+                    if (ImGui::MenuItem(LANG("English"), nullptr, currentLang == LanguageType::English))
+                    {
+                        if (currentLang != LanguageType::English)
+                        {
+                            LOG_INFO("[GUI] Switching to English");
+                            SWITCH_LANG(LanguageType::English);
+                        }
+                    }
+                    if (ImGui::MenuItem(LANG("Chinese"), nullptr, currentLang == LanguageType::Chinese))
+                    {
+                        if (currentLang != LanguageType::Chinese)
+                        {
+                            LOG_INFO("[GUI] Switching to Chinese");
+                            SWITCH_LANG(LanguageType::Chinese);
+                        }
+                    }
+                    
+                    ImGui::EndMenu();
+                }
+                
                 ImGui::EndMenu();
             }
 
@@ -135,16 +183,16 @@ void GUI::renderMainMenuBar()
         }
 
         // Help menu
-        if (ImGui::BeginMenu("Help"))
+        if (ImGui::BeginMenu(MENU_HELP))
         {
-            if (ImGui::MenuItem("About Unity Runtime Inspector"))
+            if (ImGui::MenuItem(LANG("About Unity Runtime Inspector")))
             {
-                ImGui::OpenPopup("About Unity Runtime Inspector");
+                ImGui::OpenPopup(LANG("About Unity Runtime Inspector"));
             }
             ImGui::Separator();
-            if (ImGui::MenuItem("Controls Reference"))
+            if (ImGui::MenuItem(LANG("Controls Reference")))
             {
-                ImGui::OpenPopup("Controls Reference");
+                ImGui::OpenPopup(LANG("Controls Reference"));
             }
             ImGui::EndMenu();
         }
@@ -153,20 +201,20 @@ void GUI::renderMainMenuBar()
         ImGui::Separator();
         
         // Unity Explorer status with colored indicators
-        ImGui::Text("Unity Explorer:");
+        ImGui::Text("%s:", LANG("Unity Explorer"));
         ImGui::SameLine();
         
         if (m_unityExplorer && m_unityExplorerInitialized && m_showUnityExplorer)
         {
-            ImGui::TextColored(ImVec4(0.2f, 0.8f, 0.2f, 1.0f), "● Active");
+            ImGui::TextColored(ImVec4(0.2f, 0.8f, 0.2f, 1.0f), STATUS_ACTIVE);
         }
         else if (m_showUnityExplorer)
         {
-            ImGui::TextColored(ImVec4(0.8f, 0.8f, 0.2f, 1.0f), "● Initializing...");
+            ImGui::TextColored(ImVec4(0.8f, 0.8f, 0.2f, 1.0f), STATUS_INITIALIZING);
         }
         else
         {
-            ImGui::TextDisabled("● Inactive");
+            ImGui::TextDisabled(STATUS_INACTIVE);
         }
 
         // Unity backend status
@@ -180,16 +228,16 @@ void GUI::renderMainMenuBar()
             unityModule = GetModuleHandleA("UnityPlayer.dll");
         }
 
-        ImGui::Text("Unity:");
+        ImGui::Text("%s:", LANG("Unity"));
         ImGui::SameLine();
         
         if (unityModule)
         {
-            ImGui::TextColored(ImVec4(0.2f, 0.8f, 0.2f, 1.0f), "● Connected");
+            ImGui::TextColored(ImVec4(0.2f, 0.8f, 0.2f, 1.0f), STATUS_CONNECTED);
         }
         else
         {
-            ImGui::TextColored(ImVec4(0.8f, 0.2f, 0.2f, 1.0f), "● Disconnected");
+            ImGui::TextColored(ImVec4(0.8f, 0.2f, 0.2f, 1.0f), STATUS_DISCONNECTED);
         }
 
         // Performance info
@@ -198,30 +246,31 @@ void GUI::renderMainMenuBar()
         ImGui::SameLine();
         
         float fps = ImGui::GetIO().Framerate;
-        ImGui::Text("FPS: %.1f", fps);
+        ImGui::Text("%s: %.1f", LANG("FPS"), fps);
         
         // Color code FPS
         if (fps >= 60.0f)
         {
             ImGui::SameLine();
-            ImGui::TextColored(ImVec4(0.2f, 0.8f, 0.2f, 1.0f), "●");
+            ImGui::TextColored(ImVec4(0.2f, 0.8f, 0.2f, 1.0f), LANG("●"));
         }
         else if (fps >= 30.0f)
         {
             ImGui::SameLine();
-            ImGui::TextColored(ImVec4(0.8f, 0.8f, 0.2f, 1.0f), "●");
+            ImGui::TextColored(ImVec4(0.8f, 0.8f, 0.2f, 1.0f), LANG("●"));
         }
         else
         {
             ImGui::SameLine();
-            ImGui::TextColored(ImVec4(0.8f, 0.2f, 0.2f, 1.0f), "●");
+            ImGui::TextColored(ImVec4(0.8f, 0.2f, 0.2f, 1.0f), LANG("●"));
         }
 
         // Controls hint
         ImGui::SameLine();
         ImGui::Separator();
         ImGui::SameLine();
-        ImGui::TextDisabled("INSERT: Toggle GUI | F1: Unity Explorer | F5: Refresh");
+        ImGui::TextDisabled("%s: %s | F1: %s | F5: %s", 
+                           LANG("INSERT"), LANG("Toggle GUI"), LANG("Unity Explorer"), LANG("Refresh"));
 
         ImGui::EndMainMenuBar();
     }
@@ -231,7 +280,7 @@ void GUI::renderExampleWindow()
 {
     static bool p_open = true;
 
-    if (!ImGui::Begin("Unity Runtime Inspector - Dashboard", &p_open, ImGuiWindowFlags_None))
+    if (!ImGui::Begin(LANG("Unity Runtime Inspector - Dashboard"), &p_open, ImGuiWindowFlags_None))
     {
         ImGui::End();
         return;
@@ -239,47 +288,47 @@ void GUI::renderExampleWindow()
 
     // Header section
     ImGui::PushFont(ImGui::GetIO().Fonts->Fonts[0]); // Use default font for header
-    ImGui::TextColored(ImVec4(0.8f, 0.8f, 1.0f, 1.0f), "Unity Runtime Inspector");
+    ImGui::TextColored(ImVec4(0.8f, 0.8f, 1.0f, 1.0f), LANG("Unity Runtime Inspector"));
     ImGui::PopFont();
-    ImGui::TextDisabled("Real-time Unity game inspection and debugging tool");
+    ImGui::TextDisabled(LANG("Real-time Unity game inspection and debugging tool"));
     ImGui::Separator();
 
     // Performance section
-    ImGui::Text("Performance");
+    ImGui::Text(LBL_PERFORMANCE);
     ImGui::SameLine();
-    helpMarker("Real-time performance metrics");
+    helpMarker(LANG("Real-time performance metrics"));
     
     float fps = ImGui::GetIO().Framerate;
     float frameTime = 1000.0f / fps;
     
     // Performance metrics in a styled box
     ImGui::BeginChild("Performance", ImVec2(0, 80), true);
-    ImGui::Text("Frame Rate: %.1f FPS", fps);
-    ImGui::Text("Frame Time: %.2f ms", frameTime);
+    ImGui::Text("%s: %.1f FPS", LANG("Frame Rate"), fps);
+    ImGui::Text("%s: %.2f ms", LANG("Frame Time"), frameTime);
     
     // Performance indicator
     ImGui::SameLine();
     ImGui::SetCursorPosX(ImGui::GetCursorPosX() + 200);
     if (fps >= 60.0f)
     {
-        ImGui::TextColored(ImVec4(0.2f, 0.8f, 0.2f, 1.0f), "● Excellent");
+        ImGui::TextColored(ImVec4(0.2f, 0.8f, 0.2f, 1.0f), LANG("Excellent"));
     }
     else if (fps >= 30.0f)
     {
-        ImGui::TextColored(ImVec4(0.8f, 0.8f, 0.2f, 1.0f), "● Good");
+        ImGui::TextColored(ImVec4(0.8f, 0.8f, 0.2f, 1.0f), LANG("Good"));
     }
     else
     {
-        ImGui::TextColored(ImVec4(0.8f, 0.2f, 0.2f, 1.0f), "● Poor");
+        ImGui::TextColored(ImVec4(0.8f, 0.2f, 0.2f, 1.0f), LANG("Poor"));
     }
     ImGui::EndChild();
 
     ImGui::Spacing();
 
     // Unity Backend Status section
-    ImGui::Text("Unity Backend Status");
+    ImGui::Text(LANG("Unity Backend Status"));
     ImGui::SameLine();
-    helpMarker("Connection status to Unity runtime");
+    helpMarker(LANG("Connection status to Unity runtime"));
     
     ImGui::BeginChild("BackendStatus", ImVec2(0, 100), true);
     
@@ -291,69 +340,69 @@ void GUI::renderExampleWindow()
 
     if (unityModule)
     {
-        ImGui::TextColored(ImVec4(0.2f, 0.8f, 0.2f, 1.0f), "✓ Unity backend detected");
+        ImGui::TextColored(ImVec4(0.2f, 0.8f, 0.2f, 1.0f), LANG("Unity backend detected"));
         
         auto gameAssembly = GetModuleHandleA("GameAssembly.dll");
         if (gameAssembly)
         {
-            ImGui::Text("Backend Type: IL2CPP (GameAssembly.dll)");
-            ImGui::Text("Status: Connected and ready");
+            ImGui::Text("%s: IL2CPP (GameAssembly.dll)", LANG("Backend Type"));
+            ImGui::Text("%s: %s", LANG("Status"), LANG("Connected and ready"));
         }
         else
         {
-            ImGui::Text("Backend Type: Mono (UnityPlayer.dll)");
-            ImGui::Text("Status: Connected and ready");
+            ImGui::Text("%s: Mono (UnityPlayer.dll)", LANG("Backend Type"));
+            ImGui::Text("%s: %s", LANG("Status"), LANG("Connected and ready"));
         }
         
-        ImGui::Text("Module Address: 0x%p", unityModule);
+        ImGui::Text("%s: 0x%p", LANG("Module Address"), unityModule);
     }
     else
     {
-        ImGui::TextColored(ImVec4(0.8f, 0.2f, 0.2f, 1.0f), "✗ Unity backend not found");
-        ImGui::TextWrapped("Make sure this is injected into a Unity game.");
-        ImGui::TextWrapped("Supported Unity versions: 2019.4+ (IL2CPP/Mono)");
+        ImGui::TextColored(ImVec4(0.8f, 0.2f, 0.2f, 1.0f), LANG("Unity backend not found"));
+        ImGui::TextWrapped(LANG("Make sure this is injected into a Unity game."));
+        ImGui::TextWrapped(LANG("Supported Unity versions: 2019.4+ (IL2CPP/Mono)"));
     }
     ImGui::EndChild();
 
     ImGui::Spacing();
 
     // Unity Explorer Status section
-    ImGui::Text("Unity Explorer Status");
+    ImGui::Text(LANG("Unity Explorer Status"));
     ImGui::SameLine();
-    helpMarker("Scene hierarchy and object inspector status");
+    helpMarker(LANG("Scene hierarchy and object inspector status"));
     
     ImGui::BeginChild("ExplorerStatus", ImVec2(0, 80), true);
     
     if (m_unityExplorerInitialized)
     {
-        ImGui::TextColored(ImVec4(0.2f, 0.8f, 0.2f, 1.0f), "✓ Unity Explorer ready");
-        ImGui::Text("Status: Initialized and functional");
-        ImGui::Text("Features: Scene hierarchy, Object inspector, Component analysis");
+        ImGui::TextColored(ImVec4(0.2f, 0.8f, 0.2f, 1.0f), LANG("Unity Explorer ready"));
+        ImGui::Text("%s: %s", LANG("Status"), LANG("Initialized and functional"));
+        ImGui::Text(LANG("Features: Scene hierarchy, Object inspector, Component analysis"));
     }
     else
     {
-        ImGui::TextColored(ImVec4(0.8f, 0.8f, 0.2f, 1.0f), "○ Unity Explorer not initialized");
-        ImGui::Text("Status: Waiting for initialization");
-        ImGui::Text("Click 'Open Unity Explorer' to start");
+        ImGui::TextColored(ImVec4(0.8f, 0.8f, 0.2f, 1.0f), LANG("Unity Explorer not initialized"));
+        ImGui::Text("%s: %s", LANG("Status"), LANG("Waiting for initialization"));
+        ImGui::Text(LANG("Click 'Open Unity Explorer' to start"));
     }
     ImGui::EndChild();
 
     ImGui::Spacing();
 
     // Quick Actions section
-    ImGui::Text("Quick Actions");
+    ImGui::Text(LANG("Quick Actions"));
     ImGui::SameLine();
-    helpMarker("Common actions and shortcuts");
+    helpMarker(LANG("Common actions and shortcuts"));
     
     ImGui::BeginChild("QuickActions", ImVec2(0, 120), true);
     
     // Action buttons in a grid layout
-    if (ImGui::Button("Open Unity Explorer", ImVec2(150, 30)))
+    if (ImGui::Button(LANG("Open Unity Explorer"), ImVec2(150, 30)))
     {
         showUnityExplorer();
     }
     ImGui::SameLine();
-    if (ImGui::Button("Refresh Scene", ImVec2(150, 30)))
+    if (ImGui::Button(LANG("Refresh Scene"), ImVec2(150, 30)))
     {
         if (m_unityExplorer && m_unityExplorerInitialized)
         {
@@ -363,7 +412,7 @@ void GUI::renderExampleWindow()
     }
     
     ImGui::SameLine();
-    if (ImGui::Button("Test Unity API", ImVec2(150, 30)))
+    if (ImGui::Button(LANG("Test Unity API"), ImVec2(150, 30)))
     {
         try
         {
@@ -386,20 +435,20 @@ void GUI::renderExampleWindow()
     ImGui::Spacing();
     
     // Shortcuts info
-    ImGui::Text("Keyboard Shortcuts:");
-    ImGui::BulletText("INSERT - Toggle GUI visibility");
-    ImGui::BulletText("F1 - Toggle Unity Explorer");
-    ImGui::BulletText("F5 - Refresh scene (in Unity Explorer)");
-    ImGui::BulletText("Alt+F4 - Exit application");
+    ImGui::Text(LANG("Keyboard Shortcuts:"));
+    ImGui::BulletText(LANG("INSERT - Toggle GUI visibility"));
+    ImGui::BulletText(LANG("F1 - Toggle Unity Explorer"));
+    ImGui::BulletText(LANG("F5 - Refresh scene (in Unity Explorer)"));
+    ImGui::BulletText(LANG("Alt+F4 - Exit application"));
     
     ImGui::EndChild();
 
     ImGui::Spacing();
 
     // System Information section
-    ImGui::Text("System Information");
+    ImGui::Text(LANG("System Information"));
     ImGui::SameLine();
-    helpMarker("Runtime environment details");
+    helpMarker(LANG("Runtime environment details"));
     
     ImGui::BeginChild("SystemInfo", ImVec2(0, 80), true);
     
@@ -407,16 +456,16 @@ void GUI::renderExampleWindow()
     SYSTEM_INFO sysInfo;
     GetSystemInfo(&sysInfo);
     
-    ImGui::Text("Architecture: %s", (sysInfo.wProcessorArchitecture == PROCESSOR_ARCHITECTURE_AMD64) ? "x64" : "x86");
-    ImGui::Text("Processors: %d", sysInfo.dwNumberOfProcessors);
-    ImGui::Text("Page Size: %d KB", sysInfo.dwPageSize / 1024);
+    ImGui::Text("%s: %s", LANG("Architecture"), (sysInfo.wProcessorArchitecture == PROCESSOR_ARCHITECTURE_AMD64) ? "x64" : "x86");
+    ImGui::Text("%s: %d", LANG("Processors"), sysInfo.dwNumberOfProcessors);
+    ImGui::Text("%s: %d KB", LANG("Page Size"), sysInfo.dwPageSize / 1024);
     
     // Memory info
     MEMORYSTATUSEX memInfo;
     memInfo.dwLength = sizeof(MEMORYSTATUSEX);
     if (GlobalMemoryStatusEx(&memInfo))
     {
-        ImGui::Text("Total RAM: %.1f GB", (float)memInfo.ullTotalPhys / (1024.0f * 1024.0f * 1024.0f));
+        ImGui::Text("%s: %.1f GB", LANG("Total RAM"), (float)memInfo.ullTotalPhys / (1024.0f * 1024.0f * 1024.0f));
     }
     
     ImGui::EndChild();
@@ -431,43 +480,43 @@ void GUI::renderExampleWindow()
 
 void GUI::renderAboutModal()
 {
-    if (ImGui::BeginPopupModal("About Unity Runtime Inspector", nullptr, ImGuiWindowFlags_AlwaysAutoResize))
+    if (ImGui::BeginPopupModal(LANG("About Unity Runtime Inspector"), nullptr, ImGuiWindowFlags_AlwaysAutoResize))
     {
         // Header
         ImGui::PushFont(ImGui::GetIO().Fonts->Fonts[0]);
-        ImGui::TextColored(ImVec4(0.8f, 0.8f, 1.0f, 1.0f), "Unity Runtime Inspector");
+        ImGui::TextColored(ImVec4(0.8f, 0.8f, 1.0f, 1.0f), LANG("Unity Runtime Inspector"));
         ImGui::PopFont();
-        ImGui::TextDisabled("Version 1.0.0");
+        ImGui::TextDisabled(LBL_VERSION);
         ImGui::Separator();
 
-        ImGui::TextWrapped("A powerful runtime inspection and debugging tool for Unity games. "
-                          "Built with Dear ImGui and UnityResolve for seamless integration with Unity's runtime environment.");
+        ImGui::TextWrapped(LANG("A powerful runtime inspection and debugging tool for Unity games."));
+        ImGui::TextWrapped(LANG("Built with Dear ImGui and UnityResolve for seamless integration with Unity's runtime environment."));
 
         ImGui::Spacing();
-        ImGui::Text("Key Features:");
-        ImGui::BulletText("Real-time scene hierarchy explorer");
-        ImGui::BulletText("GameObject and component inspector");
-        ImGui::BulletText("Live value monitoring and modification");
-        ImGui::BulletText("Cross-platform Unity support (IL2CPP/Mono)");
-        ImGui::BulletText("Performance monitoring and analysis");
-        ImGui::BulletText("Memory inspection and debugging");
+        ImGui::Text(LANG("Key Features:"));
+        ImGui::BulletText(LANG("Real-time scene hierarchy explorer"));
+        ImGui::BulletText(LANG("GameObject and component inspector"));
+        ImGui::BulletText(LANG("Live value monitoring and modification"));
+        ImGui::BulletText(LANG("Cross-platform Unity support (IL2CPP/Mono)"));
+        ImGui::BulletText(LANG("Performance monitoring and analysis"));
+        ImGui::BulletText(LANG("Memory inspection and debugging"));
 
         ImGui::Spacing();
-        ImGui::Text("Supported Unity Versions:");
-        ImGui::BulletText("Unity 2019.4 LTS and later");
-        ImGui::BulletText("IL2CPP and Mono scripting backends");
-        ImGui::BulletText("Windows x86 and x64 platforms");
+        ImGui::Text(LANG("Supported Unity Versions:"));
+        ImGui::BulletText(LANG("Unity 2019.4 LTS and later"));
+        ImGui::BulletText(LANG("IL2CPP and Mono scripting backends"));
+        ImGui::BulletText(LANG("Windows x86 and x64 platforms"));
 
         ImGui::Spacing();
-        ImGui::Text("Technologies:");
-        ImGui::BulletText("Dear ImGui - Immediate mode GUI");
-        ImGui::BulletText("UnityResolve - Unity runtime access");
-        ImGui::BulletText("MinHook - API hooking library");
+        ImGui::Text(LANG("Technologies:"));
+        ImGui::BulletText(LANG("Dear ImGui - Immediate mode GUI"));
+        ImGui::BulletText(LANG("UnityResolve - Unity runtime access"));
+        ImGui::BulletText(LANG("MinHook - API hooking library"));
 
         ImGui::Spacing();
         ImGui::Separator();
 
-        if (ImGui::Button("Close", ImVec2(120, 0)))
+        if (ImGui::Button(BTN_CLOSE, ImVec2(120, 0)))
         {
             ImGui::CloseCurrentPopup();
         }
@@ -476,41 +525,41 @@ void GUI::renderAboutModal()
     }
 
     // Controls Reference Modal
-    if (ImGui::BeginPopupModal("Controls Reference", nullptr, ImGuiWindowFlags_AlwaysAutoResize))
+    if (ImGui::BeginPopupModal(LANG("Controls Reference"), nullptr, ImGuiWindowFlags_AlwaysAutoResize))
     {
         ImGui::PushFont(ImGui::GetIO().Fonts->Fonts[0]);
-        ImGui::TextColored(ImVec4(0.8f, 0.8f, 1.0f, 1.0f), "Controls Reference");
+        ImGui::TextColored(ImVec4(0.8f, 0.8f, 1.0f, 1.0f), LANG("Controls Reference"));
         ImGui::PopFont();
         ImGui::Separator();
 
-        ImGui::Text("Global Controls:");
-        ImGui::BulletText("INSERT - Toggle GUI visibility");
-        ImGui::BulletText("Alt+F4 - Exit application");
+        ImGui::Text(LANG("Global Controls:"));
+        ImGui::BulletText(LANG("INSERT - Toggle GUI visibility"));
+        ImGui::BulletText(LANG("Alt+F4 - Exit application"));
 
         ImGui::Spacing();
-        ImGui::Text("Unity Explorer Controls:");
-        ImGui::BulletText("F1 - Toggle Unity Explorer window");
-        ImGui::BulletText("F5 - Refresh scene hierarchy");
-        ImGui::BulletText("Mouse Click - Select objects in hierarchy");
-        ImGui::BulletText("Double Click - Expand/collapse tree nodes");
-        ImGui::BulletText("Right Click - Context menu for objects");
+        ImGui::Text(LANG("Unity Explorer Controls:"));
+        ImGui::BulletText(LANG("F1 - Toggle Unity Explorer window"));
+        ImGui::BulletText(LANG("F5 - Refresh scene hierarchy"));
+        ImGui::BulletText(LANG("Mouse Click - Select objects in hierarchy"));
+        ImGui::BulletText(LANG("Double Click - Expand/collapse tree nodes"));
+        ImGui::BulletText(LANG("Right Click - Context menu for objects"));
 
         ImGui::Spacing();
-        ImGui::Text("Object Inspector Controls:");
-        ImGui::BulletText("Click headers - Expand/collapse components");
-        ImGui::BulletText("Hover over (?) - Show help tooltips");
-        ImGui::BulletText("Search box - Filter objects by name");
+        ImGui::Text(LANG("Object Inspector Controls:"));
+        ImGui::BulletText(LANG("Click headers - Expand/collapse components"));
+        ImGui::BulletText(LANG("Hover over (?) - Show help tooltips"));
+        ImGui::BulletText(LANG("Search box - Filter objects by name"));
 
         ImGui::Spacing();
-        ImGui::Text("Navigation:");
-        ImGui::BulletText("Mouse wheel - Scroll through lists");
-        ImGui::BulletText("Ctrl+Mouse wheel - Zoom in/out");
-        ImGui::BulletText("Tab - Navigate between input fields");
+        ImGui::Text(LANG("Navigation:"));
+        ImGui::BulletText(LANG("Mouse wheel - Scroll through lists"));
+        ImGui::BulletText(LANG("Ctrl+Mouse wheel - Zoom in/out"));
+        ImGui::BulletText(LANG("Tab - Navigate between input fields"));
 
         ImGui::Spacing();
         ImGui::Separator();
 
-        if (ImGui::Button("Close", ImVec2(120, 0)))
+        if (ImGui::Button(BTN_CLOSE, ImVec2(120, 0)))
         {
             ImGui::CloseCurrentPopup();
         }
@@ -674,7 +723,7 @@ void GUI::setupImGuiStyle()
 
 void GUI::helpMarker(const char* desc)
 {
-    ImGui::TextDisabled("(?)");
+    ImGui::TextDisabled(LANG("(?)"));
     if (ImGui::IsItemHovered())
     {
         ImGui::BeginTooltip();
@@ -683,4 +732,56 @@ void GUI::helpMarker(const char* desc)
         ImGui::PopTextWrapPos();
         ImGui::EndTooltip();
     }
+}
+
+void GUI::testLanguageSystem()
+{
+    LOG_INFO("[GUI] === Language System Test ===");
+    
+    // Initialize (should be instant now)
+    Language::getInstance().initialize();
+    LOG_INFO("[GUI] %s", LANG("Language system initialized successfully"));
+    
+    // Test current language
+    LanguageType currentLang = Language::getInstance().getCurrentLanguage();
+    const char* langName = Language::getInstance().getLanguageName(currentLang);
+    LOG_INFO("[GUI] %s: %s", LANG("Current language"), langName);
+    
+    // Test key translations
+    const char* testKeys[] = {
+        "Unity Runtime Inspector",
+        "Performance", 
+        "File", "Windows", "Tools", "Help",
+        "Open Unity Explorer",
+        "Close",
+        "English", "Chinese",
+        "Non-existent Key"  // Should return key itself
+    };
+    
+    LOG_INFO("[GUI] Testing %s translations:", LANG("Chinese"));
+    for (const char* key : testKeys)
+    {
+        const char* translation = LANG(key);
+        LOG_INFO("[GUI]   '%s' -> '%s'", key, translation);
+    }
+    
+    // Test language switching
+    LOG_INFO("[GUI] Switching to %s...", LANG("English"));
+    SWITCH_LANG(LanguageType::English);
+    
+    for (const char* key : testKeys)
+    {
+        const char* translation = LANG(key);
+        LOG_INFO("[GUI]   '%s' -> '%s'", key, translation);
+    }
+    
+    // Switch back
+    LOG_INFO("[GUI] Switching back to %s...", LANG("Chinese"));
+    SWITCH_LANG(LanguageType::Chinese);
+    
+    // Test available languages
+    const auto& availableLangs = Language::getInstance().getAvailableLanguages();
+    LOG_INFO("[GUI] %s: %s", LANG("Available languages"), availableLangs.size() > 0 ? "EN, zh-CN" : "None");
+    
+    LOG_INFO("[GUI] === Language System Test Complete ===");
 }

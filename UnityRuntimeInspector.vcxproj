@@ -13,6 +13,7 @@
   <ItemGroup>
     <ClInclude Include="src\backend\dx11_backend.h" />
     <ClInclude Include="src\backend\dx12_backend.h" />
+    <ClInclude Include="src\backend\HYWenHei.hpp" />
     <ClInclude Include="src\backend\NotoSans.hpp" />
     <ClInclude Include="src\backend\renderer_backend.h" />
     <ClInclude Include="src\core\main.h" />
@@ -23,6 +24,8 @@
     <ClInclude Include="src\methods\UnityEngine.CoreModule.hpp" />
     <ClInclude Include="src\pch.h" />
     <ClInclude Include="src\ui\gui.h" />
+    <ClInclude Include="src\ui\language.h" />
+    <ClInclude Include="src\ui\translations.h" />
     <ClInclude Include="src\utils\dx_utils.h" />
     <ClInclude Include="src\utils\helpers.h" />
     <ClInclude Include="vendor\imgui\backends\imgui_impl_dx11.h" />
@@ -130,6 +133,7 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="src\ui\gui.cpp" />
+    <ClCompile Include="src\ui\language.cpp" />
     <ClCompile Include="src\utils\dx_utils.cpp" />
     <ClCompile Include="src\utils\helpers.cpp" />
     <ClCompile Include="vendor\imgui\backends\imgui_impl_dx11.cpp">
@@ -172,6 +176,9 @@
   <ItemGroup>
     <Content Include="src\methods\method_helpers.h" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="src\ui\language.csv" />
+  </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>17.0</VCProjectVersion>
     <Keyword>Win32Proj</Keyword>
@@ -212,7 +219,7 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <OutDir>$(SolutionDir)bin\$(Configuration)-$(Platform)\</OutDir>
     <IntDir>$(SolutionDir)bin\$(Configuration)-$(Platform)\obj\</IntDir>
-    <IncludePath>$(ProjectDir)\src;$(ProjectDir)\vendor\imgui\backends;$(ProjectDir)\vendor\UnityResolve;$(ProjectDir)\vendor\imgui;$(ProjectDir)\vendor\minhook\include;$(IncludePath)</IncludePath>
+    <IncludePath>$(ProjectDir);$(ProjectDir)\src;$(ProjectDir)\vendor\imgui\backends;$(ProjectDir)\vendor\UnityResolve;$(ProjectDir)\vendor\imgui;$(ProjectDir)\vendor\minhook\include;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
@@ -245,6 +252,7 @@
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
       <AdditionalIncludeDirectories>$(ProjectDir)src;$(ProjectDir)vendor\UnityResolve;$(ProjectDir)vendor\imgui;$(ProjectDir)vendor\imgui\misc;$(ProjectDir)vendor\imgui\backends;$(ProjectDir)vendor\minhook\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp20</LanguageStandard>
+      <AdditionalOptions>/utf-8 %(AdditionalOptions)</AdditionalOptions>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>

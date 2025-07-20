@@ -23,6 +23,9 @@ public:
     void toggleUnityExplorer() { m_showUnityExplorer = !m_showUnityExplorer; }
     bool isUnityExplorerVisible() const { return m_showUnityExplorer; }
 
+    // Language testing function
+    void testLanguageSystem();
+
 private:
     GUI();
     ~GUI();
@@ -38,6 +41,7 @@ private:
     // Unity Explorer
     std::unique_ptr<UnityExplorer> m_unityExplorer;
     bool m_unityExplorerInitialized = false;
+
 
     // Rendering methods
     void renderMainMenuBar();

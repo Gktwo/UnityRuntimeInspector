@@ -1,0 +1,140 @@
+TEXT_KEY,EN,zh-CN
+# Menu items
+File,File,文件
+Exit,Exit,退出
+Windows,Windows,窗口
+Tools,Tools,工具
+Help,Help,帮助
+Example Window,Example Window,示例窗口
+Unity Explorer,Unity Explorer,Unity探索器
+Refresh Unity Explorer,Refresh Unity Explorer,刷新Unity探索器
+Test Language System,Test Language System,测试语言系统
+Theme,Theme,主题
+Dark (Default),Dark (Default),深色(默认)
+Light,Light,浅色
+Classic,Classic,经典
+About Unity Runtime Inspector,About Unity Runtime Inspector,关于Unity运行时检查器
+Controls Reference,Controls Reference,控制参考
+
+# Status bar items  
+Active,● Active,● 激活
+Inactive,● Inactive,● 未激活
+Initializing...,● Initializing...,● 初始化中...
+Connected,● Connected,● 已连接
+Disconnected,● Disconnected,● 已断开
+FPS,FPS,帧率
+Toggle GUI,Toggle GUI,切换界面
+Refresh,Refresh,刷新
+
+# Main window
+Unity Runtime Inspector - Dashboard,Unity Runtime Inspector - Dashboard,Unity运行时检查器 - 仪表板
+Unity Runtime Inspector,Unity Runtime Inspector,Unity运行时检查器
+Real-time Unity game inspection and debugging tool,Real-time Unity game inspection and debugging tool,实时Unity游戏检查和调试工具
+
+# Performance section
+Performance,Performance,性能
+Real-time performance metrics,Real-time performance metrics,实时性能指标
+Frame Rate,Frame Rate,帧率
+Frame Time,Frame Time,帧时间
+Excellent,● Excellent,● 优秀
+Good,● Good,● 良好
+Poor,● Poor,● 较差
+
+# Backend status section  
+Unity Backend Status,Unity Backend Status,Unity后端状态
+Connection status to Unity runtime,Connection status to Unity runtime,Unity运行时连接状态
+Unity backend detected,✓ Unity backend detected,✓ 检测到Unity后端
+Unity backend not found,✗ Unity backend not found,✗ 未找到Unity后端
+Backend Type,Backend Type,后端类型
+Status,Status,状态
+Connected and ready,Connected and ready,已连接并就绪
+Module Address,Module Address,模块地址
+Make sure this is injected into a Unity game.,Make sure this is injected into a Unity game.,请确保此程序注入到Unity游戏中。
+Supported Unity versions: 2019.4+ (IL2CPP/Mono),Supported Unity versions: 2019.4+ (IL2CPP/Mono),支持的Unity版本：2019.4+（IL2CPP/Mono）
+
+# Unity Explorer status section
+Unity Explorer Status,Unity Explorer Status,Unity探索器状态
+Scene hierarchy and object inspector status,Scene hierarchy and object inspector status,场景层级和对象检查器状态
+Unity Explorer ready,✓ Unity Explorer ready,✓ Unity探索器就绪
+Unity Explorer not initialized,○ Unity Explorer not initialized,○ Unity探索器未初始化
+Initialized and functional,Initialized and functional,已初始化并正常工作
+Waiting for initialization,Waiting for initialization,等待初始化
+Features: Scene hierarchy, Object inspector, Component analysis,Features: Scene hierarchy, Object inspector, Component analysis,功能：场景层级、对象检查器、组件分析
+Click 'Open Unity Explorer' to start,Click 'Open Unity Explorer' to start,点击"打开Unity探索器"开始
+
+# Quick Actions section
+Quick Actions,Quick Actions,快速操作
+Common actions and shortcuts,Common actions and shortcuts,常用操作和快捷键
+Open Unity Explorer,Open Unity Explorer,打开Unity探索器
+Refresh Scene,Refresh Scene,刷新场景
+Test Unity API,Test Unity API,测试Unity API
+Keyboard Shortcuts:,Keyboard Shortcuts:,键盘快捷键：
+INSERT - Toggle GUI visibility,INSERT - Toggle GUI visibility,INSERT - 切换界面可见性
+F1 - Toggle Unity Explorer,F1 - Toggle Unity Explorer,F1 - 切换Unity探索器
+F5 - Refresh scene (in Unity Explorer),F5 - Refresh scene (in Unity Explorer),F5 - 刷新场景（Unity探索器中）
+Alt+F4 - Exit application,Alt+F4 - Exit application,Alt+F4 - 退出应用程序
+
+# System Information section
+System Information,System Information,系统信息
+Runtime environment details,Runtime environment details,运行环境详细信息
+Architecture,Architecture,架构
+Processors,Processors,处理器
+Page Size,Page Size,页大小
+Total RAM,Total RAM,总内存
+
+# About modal
+Version 1.0.0,Version 1.0.0,版本 1.0.0
+A powerful runtime inspection and debugging tool for Unity games.,A powerful runtime inspection and debugging tool for Unity games.,强大的Unity游戏运行时检查和调试工具。
+Built with Dear ImGui and UnityResolve for seamless integration with Unity's runtime environment.,Built with Dear ImGui and UnityResolve for seamless integration with Unity's runtime environment.,使用Dear ImGui和UnityResolve构建，与Unity运行时环境无缝集成。
+Key Features:,Key Features:,主要特性：
+Real-time scene hierarchy explorer,Real-time scene hierarchy explorer,实时场景层级浏览器
+GameObject and component inspector,GameObject and component inspector,游戏对象和组件检查器
+Live value monitoring and modification,Live value monitoring and modification,实时值监控和修改
+Cross-platform Unity support (IL2CPP/Mono),Cross-platform Unity support (IL2CPP/Mono),跨平台Unity支持（IL2CPP/Mono）
+Performance monitoring and analysis,Performance monitoring and analysis,性能监控和分析
+Memory inspection and debugging,Memory inspection and debugging,内存检查和调试
+Supported Unity Versions:,Supported Unity Versions:,支持的Unity版本：
+Unity 2019.4 LTS and later,Unity 2019.4 LTS and later,Unity 2019.4 LTS及更高版本
+IL2CPP and Mono scripting backends,IL2CPP and Mono scripting backends,IL2CPP和Mono脚本后端
+Windows x86 and x64 platforms,Windows x86 and x64 platforms,Windows x86和x64平台
+Technologies:,Technologies:,技术栈：
+Dear ImGui - Immediate mode GUI,Dear ImGui - Immediate mode GUI,Dear ImGui - 即时模式GUI
+UnityResolve - Unity runtime access,UnityResolve - Unity runtime access,UnityResolve - Unity运行时访问
+MinHook - API hooking library,MinHook - API hooking library,MinHook - API钩子库
+Close,Close,关闭
+
+# Controls Reference modal
+Controls Reference,Controls Reference,控制参考
+Global Controls:,Global Controls:,全局控制：
+INSERT - Toggle GUI visibility,INSERT - Toggle GUI visibility,INSERT - 切换界面可见性
+Alt+F4 - Exit application,Alt+F4 - Exit application,Alt+F4 - 退出应用程序
+Unity Explorer Controls:,Unity Explorer Controls:,Unity探索器控制：
+F1 - Toggle Unity Explorer window,F1 - Toggle Unity Explorer window,F1 - 切换Unity探索器窗口
+F5 - Refresh scene hierarchy,F5 - Refresh scene hierarchy,F5 - 刷新场景层级
+Mouse Click - Select objects in hierarchy,Mouse Click - Select objects in hierarchy,鼠标点击 - 在层级中选择对象
+Double Click - Expand/collapse tree nodes,Double Click - Expand/collapse tree nodes,双击 - 展开/折叠树节点
+Right Click - Context menu for objects,Right Click - Context menu for objects,右击 - 对象上下文菜单
+Object Inspector Controls:,Object Inspector Controls:,对象检查器控制：
+Click headers - Expand/collapse components,Click headers - Expand/collapse components,点击标题 - 展开/折叠组件
+Hover over (?) - Show help tooltips,Hover over (?) - Show help tooltips,悬停(?) - 显示帮助提示
+Search box - Filter objects by name,Search box - Filter objects by name,搜索框 - 按名称过滤对象
+Navigation:,Navigation:,导航：
+Mouse wheel - Scroll through lists,Mouse wheel - Scroll through lists,鼠标滚轮 - 滚动列表
+Ctrl+Mouse wheel - Zoom in/out,Ctrl+Mouse wheel - Zoom in/out,Ctrl+鼠标滚轮 - 放大/缩小
+Tab - Navigate between input fields,Tab - Navigate between input fields,Tab - 在输入字段间导航
+
+# Basic buttons
+OK,OK,确定
+Cancel,Cancel,取消
+Yes,Yes,是
+No,No,否
+Language,Language,语言
+
+# Log messages
+Language system initialized successfully,Language system initialized successfully,语言系统初始化成功
+Failed to initialize language system, using fallback text,Failed to initialize language system, using fallback text,语言系统初始化失败，使用备用文本
+Current language,Current language,当前语言
+English,English,英语
+Chinese,Chinese,中文
+Available languages,Available languages,可用语言
+

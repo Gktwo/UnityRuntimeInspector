@@ -1,6 +1,6 @@
 ﻿#include "pch.h"
 #include "unity_explorer.h"
-
+#include "../ui/language.h"
 #include "methods/method_helpers.h"
 
 bool UnityExplorer::initialize()
@@ -148,36 +148,36 @@ void UnityExplorer::renderSceneExplorer()
 
     // Status indicator
     ImGui::SetCursorPosX(ImGui::GetCursorPosX() + 20);
-    ImGui::Text("Status:");
+            ImGui::Text("%s:", LANG("Status"));
     ImGui::SameLine();
     if (m_initialized)
     {
-        ImGui::TextColored(ImVec4(0.2f, 0.8f, 0.2f, 1.0f), "● Connected");
+                    ImGui::TextColored(ImVec4(0.2f, 0.8f, 0.2f, 1.0f), LANG("● Connected"));
     }
-    else
-    {
-        ImGui::TextColored(ImVec4(0.8f, 0.2f, 0.2f, 1.0f), "● Disconnected");
-    }
+            else
+        {
+            ImGui::TextColored(ImVec4(0.8f, 0.2f, 0.2f, 1.0f), LANG("● Disconnected"));
+        }
 
     ImGui::SameLine();
     ImGui::Separator();
     ImGui::SameLine();
 
     // Auto-refresh status indicator
-    if (m_autoRefresh)
-    {
-        ImGui::TextColored(ImVec4(0.2f, 0.8f, 0.2f, 1.0f), "● Auto-refresh: ON");
-    }
-    else
-    {
-        ImGui::TextColored(ImVec4(0.6f, 0.6f, 0.6f, 1.0f), "● Auto-refresh: OFF");
-    }
+            if (m_autoRefresh)
+        {
+            ImGui::TextColored(ImVec4(0.2f, 0.8f, 0.2f, 1.0f), LANG("● Auto-refresh: ON"));
+        }
+        else
+        {
+            ImGui::TextColored(ImVec4(0.6f, 0.6f, 0.6f, 1.0f), LANG("● Auto-refresh: OFF"));
+        }
 
     ImGui::EndChild();
 
     // Search filter with better styling
     ImGui::Spacing();
-    ImGui::Text("Search Objects:");
+            ImGui::Text("%s:", LANG("Search Objects"));
     ImGui::SameLine();
     helpMarker("Filter objects by name. Supports partial matches.");
 
@@ -191,21 +191,21 @@ void UnityExplorer::renderSceneExplorer()
 
     // Statistics bar
     ImGui::BeginChild("Stats", ImVec2(0, 30), true);
-    ImGui::Text("Root Objects: %zu", m_rootObjects.size());
+            ImGui::Text("%s: %zu", LANG("Root Objects"), m_rootObjects.size());
     ImGui::SameLine();
     ImGui::Separator();
     ImGui::SameLine();
-    ImGui::Text("Selected: %s", m_selectedObject ? m_selectedObject->name.c_str() : "None");
+            ImGui::Text("%s: %s", LANG("Selected"), m_selectedObject ? m_selectedObject->name.c_str() : LANG("None"));
     ImGui::SameLine();
     ImGui::Separator();
     ImGui::SameLine();
-    ImGui::Text("Filtered: %s", m_searchFilter.empty() ? "All" : "Filtered");
+            ImGui::Text("%s: %s", LANG("Filtered"), m_searchFilter.empty() ? LANG("All") : LANG("Filtered"));
     ImGui::EndChild();
 
     ImGui::Spacing();
 
     // Hierarchy tree with better styling
-    ImGui::Text("Scene Hierarchy:");
+            ImGui::Text("%s:", LANG("Scene Hierarchy"));
     ImGui::SameLine();
     helpMarker("Click objects to select them. Double-click to expand/collapse.");
 
@@ -214,8 +214,8 @@ void UnityExplorer::renderSceneExplorer()
     if (m_rootObjects.empty())
     {
         ImGui::SetCursorPosY(ImGui::GetCursorPosY() + 50);
-        ImGui::TextColored(ImVec4(0.6f, 0.6f, 0.6f, 1.0f), "No objects found in scene");
-        ImGui::TextColored(ImVec4(0.6f, 0.6f, 0.6f, 1.0f), "Make sure Unity Explorer is properly initialized");
+                    ImGui::TextColored(ImVec4(0.6f, 0.6f, 0.6f, 1.0f), LANG("No objects found in scene"));
+            ImGui::TextColored(ImVec4(0.6f, 0.6f, 0.6f, 1.0f), LANG("Make sure Unity Explorer is properly initialized"));
     }
     else
     {
@@ -306,7 +306,7 @@ void UnityExplorer::renderGameObjectNode(std::shared_ptr<GameObjectNode> node)
     // Context menu with better organization
     if (ImGui::BeginPopupContextItem())
     {
-        ImGui::Text("GameObject: %s", node->name.c_str());
+        ImGui::Text("%s: %s", LANG("GameObject"), node->name.c_str());
         ImGui::Separator();
 
         if (ImGui::MenuItem("Copy Name"))
@@ -370,8 +370,8 @@ void UnityExplorer::renderObjectInspector()
     {
         // Empty state with better styling
         ImGui::SetCursorPosY(ImGui::GetCursorPosY() + 50);
-        ImGui::TextColored(ImVec4(0.6f, 0.6f, 0.6f, 1.0f), "No object selected");
-        ImGui::TextColored(ImVec4(0.6f, 0.6f, 0.6f, 1.0f), "Select an object in the Scene Explorer to inspect it.");
+                    ImGui::TextColored(ImVec4(0.6f, 0.6f, 0.6f, 1.0f), LANG("No object selected"));
+            ImGui::TextColored(ImVec4(0.6f, 0.6f, 0.6f, 1.0f), LANG("Select an object in the Scene Explorer to inspect it"));
         ImGui::End();
         return;
     }
@@ -381,9 +381,9 @@ void UnityExplorer::renderObjectInspector()
 
     // Header section with object info
     ImGui::BeginChild("InspectorHeader", ImVec2(0, 60), true);
-    ImGui::TextColored(ImVec4(0.8f, 0.8f, 1.0f, 1.0f), "Inspecting: %s", m_selectedObject->name.c_str());
-    ImGui::Text("Type: GameObject");
-    ImGui::Text("Address: 0x%p", gameObject);
+            ImGui::TextColored(ImVec4(0.8f, 0.8f, 1.0f, 1.0f), "%s: %s", LANG("Inspecting"), m_selectedObject->name.c_str());
+            ImGui::Text("%s: %s", LANG("Type"), LANG("GameObject"));
+        ImGui::Text("%s: 0x%p", LANG("Address"), gameObject);
     ImGui::EndChild();
 
     ImGui::Spacing();
@@ -488,7 +488,7 @@ void UnityExplorer::renderObjectInspector()
     }
     catch (...)
     {
-        ImGui::TextColored(ImVec4(1, 0.5f, 0.5f, 1), "Error retrieving components");
+        ImGui::TextColored(ImVec4(1, 0.5f, 0.5f, 1), LANG("Error retrieving components"));
     }
 
     ImGui::End();
@@ -507,40 +507,40 @@ void UnityExplorer::renderGameObjectInfo(UnityResolve::UnityType::GameObject* ga
         try
         {
             // Basic properties section
-            ImGui::Text("Basic Properties:");
+            ImGui::Text("%s:", LANG("Basic Properties"));
             ImGui::Separator();
 
             // Name
             std::string name = getSafeString(gameObject->GetName());
-            ImGui::Text("Name: %s", name.c_str());
+            ImGui::Text("%s: %s", LANG("Name"), name.c_str());
 
             // Tag
             std::string tag = getSafeString(gameObject->GetTag());
-            ImGui::Text("Tag: %s", tag.c_str());
+            ImGui::Text("%s: %s", LANG("Tag"), tag.c_str());
 
             ImGui::Spacing();
 
             // State properties section
-            ImGui::Text("State Properties:");
+            ImGui::Text("%s:", LANG("State Properties"));
             ImGui::Separator();
 
             // Active state with colored indicators
             bool activeSelf = gameObject->GetActiveSelf();
             bool activeInHierarchy = gameObject->GetActiveInHierarchy();
 
-            ImGui::Text("Active Self: ");
+            ImGui::Text("%s: ", LANG("Active Self"));
             ImGui::SameLine();
             textColored(activeSelf ? ImVec4(0.2f, 0.8f, 0.2f, 1.0f) : ImVec4(0.8f, 0.2f, 0.2f, 1.0f),
                         "%s %s", activeSelf ? "●" : "○", activeSelf ? "True" : "False");
 
-            ImGui::Text("Active in Hierarchy: ");
+            ImGui::Text("%s: ", LANG("Active in Hierarchy"));
             ImGui::SameLine();
             textColored(activeInHierarchy ? ImVec4(0.2f, 0.8f, 0.2f, 1.0f) : ImVec4(0.8f, 0.2f, 0.2f, 1.0f),
                         "%s %s", activeInHierarchy ? "●" : "○", activeInHierarchy ? "True" : "False");
 
             // Static
             bool isStatic = gameObject->GetIsStatic();
-            ImGui::Text("Static: ");
+            ImGui::Text("%s: ", LANG("Static"));
             ImGui::SameLine();
             textColored(isStatic ? ImVec4(0.8f, 0.8f, 0.2f, 1.0f) : ImVec4(0.6f, 0.6f, 0.6f, 1.0f),
                         "%s %s", isStatic ? "●" : "○", isStatic ? "True" : "False");
