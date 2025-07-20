@@ -3,7 +3,7 @@
 
 // #include "backend/dx9_backend.h"
 #include "backend/dx11_backend.h"
-// #include "backend/dx12_backend.h"
+#include "backend/dx12_backend.h"
 
 Renderer& Renderer::getInstance()
 {
@@ -102,7 +102,7 @@ std::unique_ptr<IRendererBackend> Renderer::createBackend(RenderAPI api)
 	case RenderAPI::DirectX12:
         printf("init dx12 imgui\n");
 		// TODO: Implement DirectX12 backend
-		return nullptr;
+        return std::make_unique<DX12Backend>();
 	default:
 		return nullptr;
 	}

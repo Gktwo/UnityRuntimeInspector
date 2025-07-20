@@ -12,6 +12,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\backend\dx11_backend.h" />
+    <ClInclude Include="src\backend\dx12_backend.h" />
     <ClInclude Include="src\backend\NotoSans.hpp" />
     <ClInclude Include="src\backend\renderer_backend.h" />
     <ClInclude Include="src\core\main.h" />
@@ -40,6 +41,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\backend\dx11_backend.cpp" />
+    <ClCompile Include="src\backend\dx12_backend.cpp" />
     <ClCompile Include="src\backend\renderer_backend.cpp" />
     <ClCompile Include="src\core\main.cpp" />
     <ClCompile Include="src\core\renderer.cpp" />
