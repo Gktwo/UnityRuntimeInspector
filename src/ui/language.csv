@@ -1,5 +1,4 @@
 TEXT_KEY,EN,zh-CN
-# Menu items
 File,File,文件
 Exit,Exit,退出
 Windows,Windows,窗口
@@ -15,8 +14,6 @@ Light,Light,浅色
 Classic,Classic,经典
 About Unity Runtime Inspector,About Unity Runtime Inspector,关于Unity运行时检查器
 Controls Reference,Controls Reference,控制参考
-
-# Status bar items  
 Active,● Active,● 激活
 Inactive,● Inactive,● 未激活
 Initializing...,● Initializing...,● 初始化中...
@@ -25,13 +22,9 @@ Disconnected,● Disconnected,● 已断开
 FPS,FPS,帧率
 Toggle GUI,Toggle GUI,切换界面
 Refresh,Refresh,刷新
-
-# Main window
 Unity Runtime Inspector - Dashboard,Unity Runtime Inspector - Dashboard,Unity运行时检查器 - 仪表板
 Unity Runtime Inspector,Unity Runtime Inspector,Unity运行时检查器
 Real-time Unity game inspection and debugging tool,Real-time Unity game inspection and debugging tool,实时Unity游戏检查和调试工具
-
-# Performance section
 Performance,Performance,性能
 Real-time performance metrics,Real-time performance metrics,实时性能指标
 Frame Rate,Frame Rate,帧率
@@ -39,30 +32,23 @@ Frame Time,Frame Time,帧时间
 Excellent,● Excellent,● 优秀
 Good,● Good,● 良好
 Poor,● Poor,● 较差
-
-# Backend status section  
 Unity Backend Status,Unity Backend Status,Unity后端状态
 Connection status to Unity runtime,Connection status to Unity runtime,Unity运行时连接状态
-Unity backend detected,✓ Unity backend detected,✓ 检测到Unity后端
-Unity backend not found,✗ Unity backend not found,✗ 未找到Unity后端
+Unity backend detected,√ Unity backend detected,√ 检测到Unity后端
+Unity backend not found,× Unity backend not found,× 未找到Unity后端
 Backend Type,Backend Type,后端类型
 Status,Status,状态
 Connected and ready,Connected and ready,已连接并就绪
 Module Address,Module Address,模块地址
 Make sure this is injected into a Unity game.,Make sure this is injected into a Unity game.,请确保此程序注入到Unity游戏中。
 Supported Unity versions: 2019.4+ (IL2CPP/Mono),Supported Unity versions: 2019.4+ (IL2CPP/Mono),支持的Unity版本：2019.4+（IL2CPP/Mono）
-
-# Unity Explorer status section
 Unity Explorer Status,Unity Explorer Status,Unity探索器状态
 Scene hierarchy and object inspector status,Scene hierarchy and object inspector status,场景层级和对象检查器状态
-Unity Explorer ready,✓ Unity Explorer ready,✓ Unity探索器就绪
+Unity Explorer ready,√ Unity Explorer ready,√ Unity探索器就绪
 Unity Explorer not initialized,○ Unity Explorer not initialized,○ Unity探索器未初始化
 Initialized and functional,Initialized and functional,已初始化并正常工作
 Waiting for initialization,Waiting for initialization,等待初始化
-Features: Scene hierarchy, Object inspector, Component analysis,Features: Scene hierarchy, Object inspector, Component analysis,功能：场景层级、对象检查器、组件分析
-Click 'Open Unity Explorer' to start,Click 'Open Unity Explorer' to start,点击"打开Unity探索器"开始
-
-# Quick Actions section
+"Features: Scene hierarchy, Object inspector, Component analysis","Features: Scene hierarchy, Object inspector, Component analysis",功能：场景层级、对象检查器、组件分析
 Quick Actions,Quick Actions,快速操作
 Common actions and shortcuts,Common actions and shortcuts,常用操作和快捷键
 Open Unity Explorer,Open Unity Explorer,打开Unity探索器
@@ -73,16 +59,12 @@ INSERT - Toggle GUI visibility,INSERT - Toggle GUI visibility,INSERT - 切换界
 F1 - Toggle Unity Explorer,F1 - Toggle Unity Explorer,F1 - 切换Unity探索器
 F5 - Refresh scene (in Unity Explorer),F5 - Refresh scene (in Unity Explorer),F5 - 刷新场景（Unity探索器中）
 Alt+F4 - Exit application,Alt+F4 - Exit application,Alt+F4 - 退出应用程序
-
-# System Information section
 System Information,System Information,系统信息
 Runtime environment details,Runtime environment details,运行环境详细信息
 Architecture,Architecture,架构
 Processors,Processors,处理器
 Page Size,Page Size,页大小
 Total RAM,Total RAM,总内存
-
-# About modal
 Version 1.0.0,Version 1.0.0,版本 1.0.0
 A powerful runtime inspection and debugging tool for Unity games.,A powerful runtime inspection and debugging tool for Unity games.,强大的Unity游戏运行时检查和调试工具。
 Built with Dear ImGui and UnityResolve for seamless integration with Unity's runtime environment.,Built with Dear ImGui and UnityResolve for seamless integration with Unity's runtime environment.,使用Dear ImGui和UnityResolve构建，与Unity运行时环境无缝集成。
@@ -102,12 +84,7 @@ Dear ImGui - Immediate mode GUI,Dear ImGui - Immediate mode GUI,Dear ImGui - 即
 UnityResolve - Unity runtime access,UnityResolve - Unity runtime access,UnityResolve - Unity运行时访问
 MinHook - API hooking library,MinHook - API hooking library,MinHook - API钩子库
 Close,Close,关闭
-
-# Controls Reference modal
-Controls Reference,Controls Reference,控制参考
 Global Controls:,Global Controls:,全局控制：
-INSERT - Toggle GUI visibility,INSERT - Toggle GUI visibility,INSERT - 切换界面可见性
-Alt+F4 - Exit application,Alt+F4 - Exit application,Alt+F4 - 退出应用程序
 Unity Explorer Controls:,Unity Explorer Controls:,Unity探索器控制：
 F1 - Toggle Unity Explorer window,F1 - Toggle Unity Explorer window,F1 - 切换Unity探索器窗口
 F5 - Refresh scene hierarchy,F5 - Refresh scene hierarchy,F5 - 刷新场景层级
@@ -122,19 +99,68 @@ Navigation:,Navigation:,导航：
 Mouse wheel - Scroll through lists,Mouse wheel - Scroll through lists,鼠标滚轮 - 滚动列表
 Ctrl+Mouse wheel - Zoom in/out,Ctrl+Mouse wheel - Zoom in/out,Ctrl+鼠标滚轮 - 放大/缩小
 Tab - Navigate between input fields,Tab - Navigate between input fields,Tab - 在输入字段间导航
-
-# Basic buttons
 OK,OK,确定
 Cancel,Cancel,取消
 Yes,Yes,是
 No,No,否
 Language,Language,语言
-
-# Log messages
 Language system initialized successfully,Language system initialized successfully,语言系统初始化成功
-Failed to initialize language system, using fallback text,Failed to initialize language system, using fallback text,语言系统初始化失败，使用备用文本
+"Failed to initialize language system, using fallback text","Failed to initialize language system, using fallback text",语言系统初始化失败，使用备用文本
 Current language,Current language,当前语言
 English,English,英语
 Chinese,Chinese,中文
 Available languages,Available languages,可用语言
-
+Unity,Unity,Unity
+INSERT,INSERT,INSERT
+●,●,●
+(?),(?),(?)
+Status,Status,状态
+● Connected,● Connected,● 已连接
+● Disconnected,● Disconnected,● 已断开
+● Auto-refresh: ON,● Auto-refresh: ON,● 自动刷新: 开启
+● Auto-refresh: OFF,● Auto-refresh: OFF,● 自动刷新: 关闭
+Search Objects,Search Objects,搜索对象
+Root Objects,Root Objects,根对象
+Selected,Selected,已选择
+None,None,无
+Filtered,Filtered,已过滤
+All,All,全部
+Scene Hierarchy,Scene Hierarchy,场景层级
+No objects found in scene,No objects found in scene,场景中未找到对象
+Make sure Unity Explorer is properly initialized,Make sure Unity Explorer is properly initialized,请确保Unity探索器已正确初始化
+GameObject,GameObject,游戏对象
+No object selected,No object selected,未选择对象
+Select an object in the Scene Explorer to inspect it,Select an object in the Scene Explorer to inspect it,在场景探索器中选择一个对象进行检查
+Inspecting,Inspecting,正在检查
+Type,Type,类型
+Address,Address,地址
+Error retrieving components,Error retrieving components,获取组件时出错
+Basic Properties,Basic Properties,基本属性
+Name,Name,名称
+Tag,Tag,标签
+State Properties,State Properties,状态属性
+Active Self,Active Self,自身激活
+Active in Hierarchy,Active in Hierarchy,层级中激活
+Static,Static,静态
+Technical Information,Technical Information,技术信息
+Error reading GameObject data,Error reading GameObject data,读取游戏对象数据时出错
+World Transform,World Transform,世界变换
+Local Transform,Local Transform,本地变换
+Hierarchy Information,Hierarchy Information,层级信息
+Children,Children,子对象
+Parent,Parent,父对象
+<Unknown GameObject>,<Unknown GameObject>,<未知游戏对象>
+None (Root Object),None (Root Object),无 (根对象)
+Transform Address,Transform Address,变换地址
+Error reading Transform data,Error reading Transform data,读取变换数据时出错
+Field of View,Field of View,视野
+Depth,Depth,深度
+Error reading Camera data,Error reading Camera data,读取相机数据时出错
+Bounds Center,Bounds Center,边界中心
+Bounds Extents,Bounds Extents,边界范围
+Error reading Renderer data,Error reading Renderer data,读取渲染器数据时出错
+Detect Collisions,Detect Collisions,检测碰撞
+True,True,是
+False,False,否
+Error reading Rigidbody data,Error reading Rigidbody data,读取刚体数据时出错
+Error reading Collider data,Error reading Collider data,读取碰撞器数据时出错

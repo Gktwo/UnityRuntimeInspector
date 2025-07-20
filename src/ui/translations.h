@@ -2,15 +2,12 @@
 #include <unordered_map>
 #include <string>
 
-// Translation data structure
 struct TranslationEntry {
     const char* english;
     const char* chinese;
 };
 
-// All translations in a structured format
 static const std::unordered_map<std::string, TranslationEntry> g_translations = {
-    // Menu items
     {"File", {"File", "文件"}},
     {"Exit", {"Exit", "退出"}},
     {"Windows", {"Windows", "窗口"}},
@@ -26,8 +23,6 @@ static const std::unordered_map<std::string, TranslationEntry> g_translations = 
     {"Classic", {"Classic", "经典"}},
     {"About Unity Runtime Inspector", {"About Unity Runtime Inspector", "关于Unity运行时检查器"}},
     {"Controls Reference", {"Controls Reference", "控制参考"}},
-
-    // Status bar items
     {"Active", {"● Active", "● 激活"}},
     {"Inactive", {"● Inactive", "● 未激活"}},
     {"Initializing...", {"● Initializing...", "● 初始化中..."}},
@@ -36,13 +31,9 @@ static const std::unordered_map<std::string, TranslationEntry> g_translations = 
     {"FPS", {"FPS", "帧率"}},
     {"Toggle GUI", {"Toggle GUI", "切换界面"}},
     {"Refresh", {"Refresh", "刷新"}},
-
-    // Main window
     {"Unity Runtime Inspector - Dashboard", {"Unity Runtime Inspector - Dashboard", "Unity运行时检查器 - 仪表板"}},
     {"Unity Runtime Inspector", {"Unity Runtime Inspector", "Unity运行时检查器"}},
     {"Real-time Unity game inspection and debugging tool", {"Real-time Unity game inspection and debugging tool", "实时Unity游戏检查和调试工具"}},
-
-    // Performance section
     {"Performance", {"Performance", "性能"}},
     {"Real-time performance metrics", {"Real-time performance metrics", "实时性能指标"}},
     {"Frame Rate", {"Frame Rate", "帧率"}},
@@ -50,8 +41,6 @@ static const std::unordered_map<std::string, TranslationEntry> g_translations = 
     {"Excellent", {"● Excellent", "● 优秀"}},
     {"Good", {"● Good", "● 良好"}},
     {"Poor", {"● Poor", "● 较差"}},
-
-    // Backend status section
     {"Unity Backend Status", {"Unity Backend Status", "Unity后端状态"}},
     {"Connection status to Unity runtime", {"Connection status to Unity runtime", "Unity运行时连接状态"}},
     {"Unity backend detected", {"√ Unity backend detected", "√ 检测到Unity后端"}},
@@ -62,8 +51,6 @@ static const std::unordered_map<std::string, TranslationEntry> g_translations = 
     {"Module Address", {"Module Address", "模块地址"}},
     {"Make sure this is injected into a Unity game.", {"Make sure this is injected into a Unity game.", "请确保此程序注入到Unity游戏中。"}},
     {"Supported Unity versions: 2019.4+ (IL2CPP/Mono)", {"Supported Unity versions: 2019.4+ (IL2CPP/Mono)", "支持的Unity版本：2019.4+（IL2CPP/Mono）"}},
-
-    // Unity Explorer status section
     {"Unity Explorer Status", {"Unity Explorer Status", "Unity探索器状态"}},
     {"Scene hierarchy and object inspector status", {"Scene hierarchy and object inspector status", "场景层级和对象检查器状态"}},
     {"Unity Explorer ready", {"√ Unity Explorer ready", "√ Unity探索器就绪"}},
@@ -71,9 +58,6 @@ static const std::unordered_map<std::string, TranslationEntry> g_translations = 
     {"Initialized and functional", {"Initialized and functional", "已初始化并正常工作"}},
     {"Waiting for initialization", {"Waiting for initialization", "等待初始化"}},
     {"Features: Scene hierarchy, Object inspector, Component analysis", {"Features: Scene hierarchy, Object inspector, Component analysis", "功能：场景层级、对象检查器、组件分析"}},
-    {"Click 'Open Unity Explorer' to start", {"Click 'Open Unity Explorer' to start", "点击\"打开Unity探索器\"开始"}},
-
-    // Quick Actions section
     {"Quick Actions", {"Quick Actions", "快速操作"}},
     {"Common actions and shortcuts", {"Common actions and shortcuts", "常用操作和快捷键"}},
     {"Open Unity Explorer", {"Open Unity Explorer", "打开Unity探索器"}},
@@ -84,16 +68,12 @@ static const std::unordered_map<std::string, TranslationEntry> g_translations = 
     {"F1 - Toggle Unity Explorer", {"F1 - Toggle Unity Explorer", "F1 - 切换Unity探索器"}},
     {"F5 - Refresh scene (in Unity Explorer)", {"F5 - Refresh scene (in Unity Explorer)", "F5 - 刷新场景（Unity探索器中）"}},
     {"Alt+F4 - Exit application", {"Alt+F4 - Exit application", "Alt+F4 - 退出应用程序"}},
-
-    // System Information section
     {"System Information", {"System Information", "系统信息"}},
     {"Runtime environment details", {"Runtime environment details", "运行环境详细信息"}},
     {"Architecture", {"Architecture", "架构"}},
     {"Processors", {"Processors", "处理器"}},
     {"Page Size", {"Page Size", "页大小"}},
     {"Total RAM", {"Total RAM", "总内存"}},
-
-    // About modal
     {"Version 1.0.0", {"Version 1.0.0", "版本 1.0.0"}},
     {"A powerful runtime inspection and debugging tool for Unity games.", {"A powerful runtime inspection and debugging tool for Unity games.", "强大的Unity游戏运行时检查和调试工具。"}},
     {"Built with Dear ImGui and UnityResolve for seamless integration with Unity's runtime environment.", {"Built with Dear ImGui and UnityResolve for seamless integration with Unity's runtime environment.", "使用Dear ImGui和UnityResolve构建，与Unity运行时环境无缝集成。"}},
@@ -113,8 +93,6 @@ static const std::unordered_map<std::string, TranslationEntry> g_translations = 
     {"UnityResolve - Unity runtime access", {"UnityResolve - Unity runtime access", "UnityResolve - Unity运行时访问"}},
     {"MinHook - API hooking library", {"MinHook - API hooking library", "MinHook - API钩子库"}},
     {"Close", {"Close", "关闭"}},
-
-    // Controls Reference modal
     {"Global Controls:", {"Global Controls:", "全局控制："}},
     {"Unity Explorer Controls:", {"Unity Explorer Controls:", "Unity探索器控制："}},
     {"F1 - Toggle Unity Explorer window", {"F1 - Toggle Unity Explorer window", "F1 - 切换Unity探索器窗口"}},
@@ -130,29 +108,21 @@ static const std::unordered_map<std::string, TranslationEntry> g_translations = 
     {"Mouse wheel - Scroll through lists", {"Mouse wheel - Scroll through lists", "鼠标滚轮 - 滚动列表"}},
     {"Ctrl+Mouse wheel - Zoom in/out", {"Ctrl+Mouse wheel - Zoom in/out", "Ctrl+鼠标滚轮 - 放大/缩小"}},
     {"Tab - Navigate between input fields", {"Tab - Navigate between input fields", "Tab - 在输入字段间导航"}},
-
-    // Basic buttons
     {"OK", {"OK", "确定"}},
     {"Cancel", {"Cancel", "取消"}},
     {"Yes", {"Yes", "是"}},
     {"No", {"No", "否"}},
     {"Language", {"Language", "语言"}},
-
-    // Log messages
     {"Language system initialized successfully", {"Language system initialized successfully", "语言系统初始化成功"}},
     {"Failed to initialize language system, using fallback text", {"Failed to initialize language system, using fallback text", "语言系统初始化失败，使用备用文本"}},
     {"Current language", {"Current language", "当前语言"}},
     {"English", {"English", "英语"}},
     {"Chinese", {"Chinese", "中文"}},
     {"Available languages", {"Available languages", "可用语言"}},
-    
-    // GUI hardcoded strings
     {"Unity", {"Unity", "Unity"}},
     {"INSERT", {"INSERT", "INSERT"}},
     {"●", {"●", "●"}},
     {"(?)", {"(?)", "(?)"}},
-    
-    // Unity Explorer hardcoded strings
     {"Status", {"Status", "状态"}},
     {"● Connected", {"● Connected", "● 已连接"}},
     {"● Disconnected", {"● Disconnected", "● 已断开"}},
@@ -203,4 +173,4 @@ static const std::unordered_map<std::string, TranslationEntry> g_translations = 
     {"False", {"False", "否"}},
     {"Error reading Rigidbody data", {"Error reading Rigidbody data", "读取刚体数据时出错"}},
     {"Error reading Collider data", {"Error reading Collider data", "读取碰撞器数据时出错"}},
-}; 
+};
